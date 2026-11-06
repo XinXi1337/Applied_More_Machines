@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "applied_more_machines:block/ae_factory_pattern"
+    },
+    "facing=east": {
+      "model": "applied_more_machines:block/ae_factory_pattern",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "applied_more_machines:block/ae_factory_pattern",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "applied_more_machines:block/ae_factory_pattern",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "applied_more_machines:block/ae_fish", "y": 0 },
+    "facing=east": { "model": "applied_more_machines:block/ae_fish", "y": 90 },
+    "facing=south": { "model": "applied_more_machines:block/ae_fish", "y": 180 },
+    "facing=west": { "model": "applied_more_machines:block/ae_fish", "y": 270 }
+  }
+}

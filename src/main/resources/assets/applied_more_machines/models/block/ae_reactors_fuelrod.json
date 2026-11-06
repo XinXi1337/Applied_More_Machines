@@ -1,0 +1,8 @@
+{
+  "parent": "bigreactors:block/reactor/fuel_rod",
+  "textures": {
+    "cap": "applied_more_machines:block/ae_reactors_fuelrod/up",
+    "side": "applied_more_machines:block/ae_reactors_fuelrod/north",
+    "particle": "applied_more_machines:block/ae_reactors_fuelrod/north"
+  }
+}

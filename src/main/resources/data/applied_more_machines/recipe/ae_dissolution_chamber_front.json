@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "industrialforegoing"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PAP",
+    "UDU",
+    "CMC"
+  ],
+  "key": {
+    "P": {
+      "item": "ae2:fluix_pearl"
+    },
+    "A": {
+      "item": "ae2:molecular_assembler"
+    },
+    "U": {
+      "item": "ae2:fluix_upgrade_smithing_template"
+    },
+    "D": {
+      "item": "industrialforegoing:dissolution_chamber"
+    },
+    "C": {
+      "item": "ae2:crafting_accelerator"
+    },
+    "M": {
+      "item": "ae2:controller"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_dissolution_chamber_front",
+    "count": 1
+  }
+}

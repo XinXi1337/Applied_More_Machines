@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "FSF",
+    "SCS",
+    "FSF"
+  ],
+  "key": {
+    "F": {
+      "item": "ae2:fluix_block"
+    },
+    "S": {
+      "item": "ae2:sky_stone_block"
+    },
+    "C": {
+      "item": "ae2:controller"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_factory_controller",
+    "count": 1
+  }
+}

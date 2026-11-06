@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "draconicevolution" }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["WQW", "UCU", "AIA"],
+  "key": {
+    "W": { "item": "draconicevolution:wyvern_core" },
+    "Q": { "item": "draconicevolution:wyvern_wireless_crystal" },
+    "U": { "item": "ae2:crafting_unit" },
+    "C": { "item": "draconicevolution:crafting_core" },
+    "A": { "item": "ae2:crafting_accelerator" },
+    "I": { "item": "draconicevolution:basic_crafting_injector" }
+  },
+  "result": { "id": "applied_more_machines:ae_crafting_core", "count": 1 }
+}

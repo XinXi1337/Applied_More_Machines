@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "applied_more_machines:block/ae_enchanting_table"
+    },
+    "facing=east": {
+      "model": "applied_more_machines:block/ae_enchanting_table",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "applied_more_machines:block/ae_enchanting_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "applied_more_machines:block/ae_enchanting_table",
+      "y": 270
+    }
+  }
+}

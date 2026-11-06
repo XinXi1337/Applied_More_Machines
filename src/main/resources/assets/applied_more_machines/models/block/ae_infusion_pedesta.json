@@ -1,0 +1,12 @@
+{
+  "textures": {
+    "east": "ae2:block/generics/side",
+    "north": "applied_more_machines:block/ae_infusion_pedesta_front",
+    "up": "ae2:block/generics/top",
+    "south": "ae2:block/generics/back",
+    "west": "ae2:block/generics/side",
+    "down": "ae2:block/generics/bottom",
+    "particle": "applied_more_machines:block/ae_infusion_pedesta_front"
+  },
+  "parent": "minecraft:block/cube"
+}

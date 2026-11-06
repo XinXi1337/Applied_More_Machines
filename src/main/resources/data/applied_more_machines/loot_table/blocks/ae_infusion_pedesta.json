@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:block",
+  "pools": [{
+    "rolls": 1,
+    "entries": [{ "type": "minecraft:item", "name": "applied_more_machines:ae_infusion_pedesta" }],
+    "conditions": [{ "condition": "minecraft:survives_explosion" }]
+  }]
+}

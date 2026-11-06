@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "applied_more_machines:block/ae_factory_casing/north",
+    "up": "applied_more_machines:block/ae_factory_casing/up",
+    "west": "applied_more_machines:block/ae_factory_casing/west",
+    "north": "applied_more_machines:block/ae_factory_casing/north",
+    "east": "applied_more_machines:block/ae_factory_casing/east",
+    "south": "applied_more_machines:block/ae_factory_casing/south",
+    "down": "applied_more_machines:block/ae_factory_casing/down"
+  }
+}

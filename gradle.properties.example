@@ -1,0 +1,20 @@
+# Copy this file to gradle.properties before importing or building.
+# Configure a local JDK 21 through JAVA_HOME or your IDE Gradle JVM.
+org.gradle.jvmargs=-Xmx3G -Dfile.encoding=UTF-8
+org.gradle.daemon=true
+org.gradle.parallel=true
+org.gradle.caching=true
+org.gradle.java.installations.auto-download=false
+minecraft_version=1.21.1
+neo_version=21.1.264
+ae2_version=19.2.18
+mod_id=applied_more_machines
+mod_name=Applied:MoreMachines
+mod_version=0.1.0
+mod_group_id=com.appliedmoremachines
+mod_license=MIT
+mod_authors=XinXi
+systemProp.org.gradle.internal.http.connectionTimeout=5000
+systemProp.org.gradle.internal.http.socketTimeout=10000
+
+dev_username=Developer

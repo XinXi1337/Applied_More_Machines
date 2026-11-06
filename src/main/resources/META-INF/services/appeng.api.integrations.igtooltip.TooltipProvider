@@ -1,0 +1,6 @@
+com.appliedmoremachines.integration.AltarTooltipProvider
+com.appliedmoremachines.integration.CoreTooltipProvider
+com.appliedmoremachines.integration.FishTooltipProvider
+com.appliedmoremachines.integration.LatexTooltipProvider
+com.appliedmoremachines.integration.DissolutionTooltipProvider
+com.appliedmoremachines.integration.FluidLaserTooltipProvider

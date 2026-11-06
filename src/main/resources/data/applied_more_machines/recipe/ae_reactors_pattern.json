@@ -1,0 +1,12 @@
+{
+  "neoforge:conditions": [ { "type": "neoforge:mod_loaded", "modid": "bigreactors" } ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["PCP", "CMC", "PCP"],
+  "key": {
+    "P": { "item": "ae2:pattern_provider" },
+    "C": { "item": "bigreactors:basic_reactorcasing" },
+    "M": { "item": "ae2:controller" }
+  },
+  "result": { "id": "applied_more_machines:ae_reactors_pattern", "count": 1 }
+}

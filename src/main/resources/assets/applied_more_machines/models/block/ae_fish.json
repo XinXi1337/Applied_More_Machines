@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "north": "applied_more_machines:block/ae_fish",
+    "east": "ae2:block/generics/side",
+    "south": "ae2:block/generics/back",
+    "west": "ae2:block/generics/side",
+    "up": "ae2:block/generics/top",
+    "down": "ae2:block/generics/bottom",
+    "particle": "applied_more_machines:block/ae_fish"
+  }
+}

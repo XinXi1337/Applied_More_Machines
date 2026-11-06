@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "mysticalagriculture" }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["CMC", "PAP", "RXR"],
+  "key": {
+    "C": { "item": "ae2:crafting_unit" },
+    "M": { "item": "ae2:molecular_assembler" },
+    "P": { "item": "mysticalagriculture:infusion_pedestal" },
+    "A": { "item": "mysticalagriculture:infusion_altar" },
+    "R": { "item": "ae2:crafting_accelerator" },
+    "X": { "item": "mysticalagriculture:infusion_crystal" }
+  },
+  "result": { "id": "applied_more_machines:ae_infusion_pedesta", "count": 1 }
+}

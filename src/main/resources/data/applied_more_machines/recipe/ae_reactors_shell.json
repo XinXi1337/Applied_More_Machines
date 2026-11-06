@@ -1,0 +1,20 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "bigreactors"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["CQC", "QMQ", "CQC"],
+  "key": {
+    "C": { "item": "bigreactors:basic_reactorcasing" },
+    "Q": { "item": "minecraft:quartz_block" },
+    "M": { "item": "ae2:matter_ball" }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_reactors_shell",
+    "count": 1
+  }
+}

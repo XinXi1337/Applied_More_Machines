@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "applied_more_machines:block/ae_reactors_fuelrod",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "applied_more_machines:block/ae_reactors_fuelrod"
+    },
+    "axis=z": {
+      "model": "applied_more_machines:block/ae_reactors_fuelrod",
+      "x": 90
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WAW",
+    "FRF",
+    "CEC"
+  ],
+  "key": {
+    "W": { "item": "minecraft:water_bucket" },
+    "A": { "item": "ae2:annihilation_plane" },
+    "F": { "item": "ae2:fluix_crystal" },
+    "R": { "item": "minecraft:fishing_rod" },
+    "C": { "item": "ae2:4k_crafting_storage" },
+    "E": { "item": "ae2:energy_cell" }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_fish",
+    "count": 1
+  }
+}

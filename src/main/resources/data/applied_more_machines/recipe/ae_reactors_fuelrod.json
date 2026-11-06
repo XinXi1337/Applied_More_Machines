@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "bigreactors"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "EQE",
+    "QRQ",
+    "EQE"
+  ],
+  "key": {
+    "E": {
+      "item": "ae2:engineering_processor"
+    },
+    "Q": {
+      "item": "ae2:fluix_crystal"
+    },
+    "R": {
+      "item": "bigreactors:basic_reactorfuelrod"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_reactors_fuelrod",
+    "count": 1
+  }
+}

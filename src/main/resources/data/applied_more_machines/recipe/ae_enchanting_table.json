@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ECE",
+    "ATA",
+    "FCF"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "C": {
+      "item": "ae2:crafting_unit"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "T": {
+      "item": "minecraft:enchanting_table"
+    },
+    "F": {
+      "item": "ae2:fluix_crystal"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_enchanting_table",
+    "count": 1
+  }
+}

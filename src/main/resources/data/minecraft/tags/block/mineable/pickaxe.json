@@ -1,0 +1,28 @@
+{
+  "replace": false,
+  "values": [
+    "applied_more_machines:ae_infusion_pedesta",
+    "applied_more_machines:ae_crafting_core",
+    "applied_more_machines:ae_enchanting_table",
+    "applied_more_machines:ae_fish",
+    "applied_more_machines:ae_factory_pattern",
+    "applied_more_machines:ae_factory_controller",
+    "applied_more_machines:ae_factory_casing",
+    "applied_more_machines:ae_latex_extraction_processor",
+    "applied_more_machines:ae_dissolution_chamber_front",
+    {
+      "id": "applied_more_machines:ae_fluid_laser_base",
+      "required": false
+    },
+    {
+      "id": "applied_more_machines:ae_reactors_shell",
+      "required": false
+    },
+    { "id": "applied_more_machines:ae_reactors_controller", "required": false },
+    { "id": "applied_more_machines:ae_reactors_pattern", "required": false },
+    {
+      "id": "applied_more_machines:ae_reactors_fuelrod",
+      "required": false
+    }
+  ]
+}

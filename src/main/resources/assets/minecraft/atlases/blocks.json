@@ -1,0 +1,240 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:unstitch",
+      "resource": "applied_more_machines:block/ae_factory_pattern",
+      "divisor_x": 64,
+      "divisor_y": 64,
+      "regions": [
+        {
+          "sprite": "applied_more_machines:block/ae_factory_pattern/up",
+          "x": 16,
+          "y": 0,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_pattern/west",
+          "x": 0,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_pattern/north",
+          "x": 16,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_pattern/east",
+          "x": 32,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_pattern/south",
+          "x": 48,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_pattern/down",
+          "x": 16,
+          "y": 32,
+          "width": 16,
+          "height": 16
+        }
+      ]
+    },
+    {
+      "type": "minecraft:unstitch",
+      "resource": "applied_more_machines:block/ae_factory_controller",
+      "divisor_x": 64,
+      "divisor_y": 64,
+      "regions": [
+        {
+          "sprite": "applied_more_machines:block/ae_factory_controller/up",
+          "x": 16,
+          "y": 0,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_controller/west",
+          "x": 0,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_controller/north",
+          "x": 16,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_controller/east",
+          "x": 32,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_controller/south",
+          "x": 48,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_controller/down",
+          "x": 16,
+          "y": 32,
+          "width": 16,
+          "height": 16
+        }
+      ]
+    },
+    {
+      "type": "minecraft:unstitch",
+      "resource": "applied_more_machines:block/ae_factory_casing_64x64",
+      "divisor_x": 64,
+      "divisor_y": 64,
+      "regions": [
+        {
+          "sprite": "applied_more_machines:block/ae_factory_casing/up",
+          "x": 16,
+          "y": 0,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_casing/west",
+          "x": 0,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_casing/north",
+          "x": 16,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_casing/east",
+          "x": 32,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_casing/south",
+          "x": 48,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_casing/down",
+          "x": 16,
+          "y": 32,
+          "width": 16,
+          "height": 16
+        }
+      ]
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "applied_more_machines:gui/ae_dissolution_chamber_front"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "applied_more_machines:gui/ae_fluid_laser_base"
+    },
+    {
+      "type": "minecraft:unstitch",
+      "resource": "applied_more_machines:block/ae_reactors_controller",
+      "divisor_x": 64,
+      "divisor_y": 64,
+      "regions": [
+        { "sprite": "applied_more_machines:block/ae_reactors_controller/up", "x": 16, "y": 0, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_controller/west", "x": 0, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_controller/north", "x": 16, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_controller/east", "x": 32, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_controller/south", "x": 48, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_controller/down", "x": 16, "y": 32, "width": 16, "height": 16 }
+      ]
+    },
+    {
+      "type": "minecraft:unstitch",
+      "resource": "applied_more_machines:block/ae_reactors_pattern",
+      "divisor_x": 64,
+      "divisor_y": 64,
+      "regions": [
+        { "sprite": "applied_more_machines:block/ae_reactors_pattern/up", "x": 16, "y": 0, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_pattern/west", "x": 0, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_pattern/north", "x": 16, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_pattern/east", "x": 32, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_pattern/south", "x": 48, "y": 16, "width": 16, "height": 16 },
+        { "sprite": "applied_more_machines:block/ae_reactors_pattern/down", "x": 16, "y": 32, "width": 16, "height": 16 }
+      ]
+    },
+    {
+      "type": "minecraft:unstitch",
+      "resource": "applied_more_machines:block/ae_reactors_fuelrod",
+      "divisor_x": 64,
+      "divisor_y": 64,
+      "regions": [
+        {
+          "sprite": "applied_more_machines:block/ae_reactors_fuelrod/up",
+          "x": 16,
+          "y": 0,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_reactors_fuelrod/west",
+          "x": 0,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_reactors_fuelrod/north",
+          "x": 16,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_reactors_fuelrod/east",
+          "x": 32,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_reactors_fuelrod/south",
+          "x": 48,
+          "y": 16,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_reactors_fuelrod/down",
+          "x": 16,
+          "y": 32,
+          "width": 16,
+          "height": 16
+        }
+      ]
+    }
+  ]
+}

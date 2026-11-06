@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "north": "applied_more_machines:gui/ae_fluid_laser_base",
+    "east": "applied_more_machines:gui/ae_fluid_laser_base",
+    "south": "applied_more_machines:gui/ae_fluid_laser_base",
+    "west": "applied_more_machines:gui/ae_fluid_laser_base",
+    "up": "ae2:block/generics/top",
+    "down": "ae2:block/generics/bottom",
+    "particle": "applied_more_machines:gui/ae_fluid_laser_base"
+  }
+}

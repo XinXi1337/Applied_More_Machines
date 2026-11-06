@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "industrialforegoing"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PFP",
+    "ECL",
+    "UFU"
+  ],
+  "key": {
+    "P": {
+      "item": "ae2:crafting_accelerator"
+    },
+    "F": {
+      "item": "ae2:fluix_block"
+    },
+    "E": {
+      "item": "industrialforegoing:fluid_extractor"
+    },
+    "C": {
+      "item": "ae2:controller"
+    },
+    "L": {
+      "item": "industrialforegoing:latex_processing_unit"
+    },
+    "U": {
+      "item": "ae2:crafting_unit"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_latex_extraction_processor",
+    "count": 1
+  }
+}
