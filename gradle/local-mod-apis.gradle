@@ -1,0 +1,47 @@
+// Local APIs remain compileOnly. Version suffixes are discovered from user-managed files.
+ext.selectLocalModApi = { String label, String directory, String pattern, Collection<File> candidates ->
+    def matches = candidates.sort { it.name }
+    if (matches.isEmpty()) {
+        throw new GradleException("Missing local compile API for ${label}. Expected one '${pattern}' in '${directory}'. Place the mod JAR there, then reload Gradle.")
+    }
+    if (matches.size() != 1) {
+        throw new GradleException("Multiple local compile APIs for ${label} in '${directory}': ${matches*.name.join(', ')}. Keep one version, then reload Gradle.")
+    }
+    matches.first()
+}
+
+ext.localModApiSpecs = [
+    [label: 'Mystical Agriculture', directory: '.dependency-cache/compile-only', pattern: '*mysticalagriculture-*.jar'],
+    [label: 'JEI', directory: '.dependency-cache/compile-only', pattern: '*jei-*.jar'],
+    [label: 'Draconic Evolution', directory: '.dependency-cache/compile-only', pattern: '*draconic-evolution-*.jar'],
+    [label: 'BrandonsCore', directory: '.dependency-cache/compile-only', pattern: '*brandonscore-*.jar'],
+    [label: 'Productive Bees', directory: '.dependency-cache/compile-only', pattern: '*productivebees-*.jar'],
+    [label: 'Mekanism', directory: 'run/mods', pattern: '*Mekanism-*.jar'],
+    [label: 'AppliedFlux', directory: 'run/mods', pattern: '*AppliedFlux-*.jar'],
+    [label: 'Omnisequence', directory: 'run/mods', pattern: '*omnisequence-transfinite-*.jar'],
+    [label: 'NeoECO', directory: 'run/mods', pattern: '*neoecoae-*.jar'],
+    [label: 'Thunderbolt', directory: 'run/mods', pattern: '*thunderbolt-*.jar'],
+    [label: 'AE2LT', directory: 'run/mods', pattern: '*ae2lt-*.jar'],
+    [label: 'Data Energistics', directory: 'run/mods', pattern: '*data_energistics-*.jar'],
+    [label: 'AE2WTLib', directory: 'run/mods', pattern: '*ae2wtlib-*.jar'],
+]
+
+ext.localModApi = { spec ->
+    files(providers.provider {
+        def matches = fileTree(spec.directory) {
+            include spec.pattern
+            exclude '*-sources.jar', '*-javadoc.jar'
+        }.files
+        selectLocalModApi(spec.label, spec.directory, spec.pattern, matches)
+    })
+}
+
+tasks.register('checkLocalModApis') {
+    group = 'verification'
+    description = 'List and validate the single installed JAR used for each local compile API.'
+    doLast {
+        localModApiSpecs.each { spec ->
+            println "${spec.label}: ${localModApi(spec).singleFile.name}"
+        }
+    }
+}
