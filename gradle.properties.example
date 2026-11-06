@@ -6,7 +6,10 @@ org.gradle.parallel=true
 org.gradle.caching=true
 org.gradle.java.installations.auto-download=false
 minecraft_version=1.21.1
+# NeoForge used for development and compilation.
 neo_version=21.1.264
+# Minimum runtime version; AE2 19.2.18 requires at least 21.1.169.
+neo_min_version=21.1.169
 ae2_version=19.2.18
 mod_id=applied_more_machines
 mod_name=Applied:MoreMachines

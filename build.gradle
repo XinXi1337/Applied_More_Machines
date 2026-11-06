@@ -50,7 +50,7 @@ dependencies {
     compileOnly fileTree('run/mods') { include '*ae2wtlib-19.5.1.jar' }
 }
 sourceSets.main.resources.srcDir "src/generated/resources"
-def metadataProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version, mod_license: mod_license, mod_authors: mod_authors, minecraft_version: minecraft_version, neo_version: neo_version]
+def metadataProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version, mod_license: mod_license, mod_authors: mod_authors, minecraft_version: minecraft_version, neo_min_version: neo_min_version]
 tasks.named("processResources", ProcessResources) {
     inputs.properties metadataProperties
     filesMatching("META-INF/neoforge.mods.toml") { expand metadataProperties }

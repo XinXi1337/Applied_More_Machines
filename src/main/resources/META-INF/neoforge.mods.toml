@@ -12,7 +12,7 @@ config="applied_more_machines.mixins.json"
 [[dependencies.${mod_id}]]
 modId="neoforge"
 type="required"
-versionRange="[${neo_version},21.2)"
+versionRange="[${neo_min_version},21.2)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]
