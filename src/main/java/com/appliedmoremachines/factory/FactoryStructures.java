@@ -12,12 +12,15 @@ import net.neoforged.fml.ModList;
 /** Authoritative formation updates; optional compatibility uses registry IDs only. */
 public final class FactoryStructures {
     private static final ResourceLocation AIR = ResourceLocation.parse("minecraft:air");
-    private static final ResourceLocation OXIDIZING_FACTORY = ResourceLocation.parse("mekmm:ultimate_oxidizing_factory");
 
     private FactoryStructures() {}
 
     public static boolean enabled() {
-        return ModList.get().isLoaded("mekanism") && BuiltInRegistries.BLOCK.containsKey(OXIDIZING_FACTORY);
+        return ModList.get().isLoaded("mekanism")
+                && (BuiltInRegistries.BLOCK.containsKey(FactoryStructure.MEKMM_OXIDIZER)
+                || BuiltInRegistries.BLOCK.containsKey(FactoryStructure.CHEMICAL_OXIDIZER))
+                && (BuiltInRegistries.BLOCK.containsKey(FactoryStructure.MEKMM_CRYSTALLIZER)
+                || BuiltInRegistries.BLOCK.containsKey(FactoryStructure.CHEMICAL_CRYSTALLIZER));
     }
 
     public static FactoryStructure.View view(Level level) {
@@ -41,12 +44,12 @@ public final class FactoryStructures {
      * the plan with the fewest conflicts, then the fewest missing blocks.
      */
     public static FactoryFormation prospective(FactoryStructure.View view, Direction facing, BlockPos controller) {
-        // The schematic's front faces local south (+Z). Rotate that side so it
-        // faces the player side represented by the controller's FACING state.
+        // The updated schematic faces local north (-Z). Rotate its front
+        // toward the clicked controller's FACING state for projection and placement.
         int turns = switch (facing) {
-            case WEST -> 1;
-            case NORTH -> 2;
-            case EAST -> 3;
+            case EAST -> 1;
+            case SOUTH -> 2;
+            case WEST -> 3;
             default -> 0;
         };
         FactoryStructure structure = FactoryStructure.definition();
@@ -66,8 +69,7 @@ public final class FactoryStructures {
                     continue;
                 }
                 ResourceLocation actual = view.block(pos);
-                if (FactoryMachineTiers.matches(cell.block(), actual)
-                        || cell.block().equals(FactoryStructure.CASING) && FactoryStructure.PATTERN.equals(actual)) {
+                if (structure.accepts(cell, actual)) {
                     continue;
                 }
                 if (AIR.equals(actual)) missing++;

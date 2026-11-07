@@ -1,119 +1,161 @@
 {
-  "source_sha256": "ef795a3a2f988e7e6d74dc7a583166366986f80a04fcea5575106ef4032dee26",
-  "required_mods": ["mekanism", "mekmm"],
+  "source_sha256": "894093040d3d6572ec4a0243e6179d1db1796ff690be19619d091da7120a606d",
+  "required_mods": [
+    "mekanism"
+  ],
   "size": [
-    14,
+    10,
     5,
-    14
+    10
   ],
   "palette": {
-    "A": "ae2:smooth_sky_stone_slab",
-    "B": "ae2:smooth_sky_stone_block",
-    "C": "applied_more_machines:ae_factory_casing",
-    "D": "applied_more_machines:ae_factory_pattern",
-    "E": "applied_more_machines:ae_factory_controller",
-    "F": "ae2:smooth_sky_stone_wall",
-    "G": "mekanism:ultimate_smelting_factory",
-    "H": "mekanism:ultimate_enriching_factory",
-    "I": "mekanism:ultimate_crushing_factory",
-    "J": "mekanism:ultimate_sawing_factory",
-    "K": "mekanism:ultimate_purifying_factory",
-    "L": "mekanism:ultimate_injecting_factory",
-    "M": "mekanism:ultimate_infusing_factory",
-    "N": "mekanism:chemical_infuser",
-    "O": "mekanism:electrolytic_separator",
-    "P": "mekanism:chemical_dissolution_chamber",
-    "Q": "mekanism:chemical_washer",
-    "R": "mekanism:ultimate_compressing_factory",
-    "S": "mekanism:nutritional_liquifier",
-    "T": "mekanism:pressurized_reaction_chamber",
-    "U": "mekanism:personal_barrel",
-    "V": "mekanism:rotary_condensentrator",
-    "W": "mekanism:thermal_evaporation_block",
-    "X": "mekanism:thermal_evaporation_controller",
-    "Y": "ae2:quartz_vibrant_glass",
-    "Z": "mekmm:ultimate_oxidizing_factory"
+    "A": "applied_more_machines:ae_factory_casing",
+    "B": "applied_more_machines:ae_factory_pattern",
+    "C": "applied_more_machines:ae_factory_controller",
+    "E": "mekanism:thermal_evaporation_block",
+    "F": "mekanism:thermal_evaporation_controller",
+    "G": "mekmm:ultimate_crystallizing_factory",
+    "H": "mekanism:rotary_condensentrator",
+    "I": "mekanism:personal_barrel",
+    "J": "mekmm:ultimate_oxidizing_factory",
+    "K": "mekanism:pressurized_reaction_chamber",
+    "L": "mekanism:nutritional_liquifier",
+    "M": "mekanism:ultimate_compressing_factory",
+    "N": "mekanism:chemical_washer",
+    "O": "mekanism:chemical_dissolution_chamber",
+    "P": "mekanism:electrolytic_separator",
+    "Q": "mekanism:chemical_infuser",
+    "R": "mekanism:ultimate_infusing_factory",
+    "S": "mekanism:ultimate_injecting_factory",
+    "T": "mekanism:ultimate_purifying_factory",
+    "U": "mekanism:ultimate_sawing_factory",
+    "V": "mekanism:ultimate_crushing_factory",
+    "W": "mekanism:ultimate_enriching_factory",
+    "X": "mekanism:ultimate_smelting_factory",
+    "Y": "ae2:quartz_vibrant_glass"
   },
   "layers": [
     [
-      "A............A",
-      "BAAAAAAAAAAAAB",
-      "ABBBBBBBBBBBBA",
-      "ABBCCCCCCCCBBA",
-      "ABCCBBBBBBCCBA",
-      "ABCBBBBBBBBCBA",
-      "ABCBBBBBBBBCBA",
-      "ABCBBBBBBBBCBA",
-      "ABCBBBBBBBBCBA",
-      "ABCCBBBBBBCCBA",
-      "ABBCDDEEDDCBBA",
-      "ABBBBBBBBBBBBA",
-      "BAAAAAAAAAAAAB",
-      "A............A"
+      ".AAAAAAAA.",
+      "AABBCCBBAA",
+      "AAAAAAAAAA",
+      "AAAAAAAAAA",
+      "AAAAAAAAAA",
+      "AAAAAAAAAA",
+      "AAAAAAAAAA",
+      "AAAAAAAAAA",
+      "AAAAAAAAAA",
+      ".AAAAAAAA."
     ],
     [
-      "..............",
-      "F............F",
-      "..............",
-      "..............",
-      "...FBBBBBBF...",
-      "...BGHIJKLB...",
-      "...BMNOPQRB...",
-      "...BSTZUVSB...",
-      "...BWWXXWWB...",
-      "...FBBBBBBF...",
-      "..............",
-      "..............",
-      "F............F",
-      ".............."
+      "..........",
+      "..........",
+      "..AAAAAA..",
+      ".AEEFFEEA.",
+      ".AGHIJKLA.",
+      ".AMNOPQRA.",
+      ".ASTUVWXA.",
+      "..AAAAAA..",
+      "..........",
+      ".........."
     ],
     [
-      "..............",
-      "..............",
-      "..............",
-      "..............",
-      "....BYYYYB....",
-      "...B......B...",
-      "...Y......Y...",
-      "...Y......Y...",
-      "...B......B...",
-      "....BYYYYB....",
-      "..............",
-      "..............",
-      "..............",
-      ".............."
+      "..........",
+      "..........",
+      "..AYYYYA..",
+      ".A......A.",
+      ".Y......Y.",
+      ".Y......Y.",
+      ".A......A.",
+      "..AYYYYA..",
+      "..........",
+      ".........."
     ],
     [
-      "..............",
-      "..............",
-      "..............",
-      "..............",
-      "....BBBBBB....",
-      "...B......B...",
-      "...B......B...",
-      "...B......B...",
-      "...B......B...",
-      "....BBBBBB....",
-      "..............",
-      "..............",
-      "..............",
-      ".............."
+      "..........",
+      "..........",
+      "..AAAAAA..",
+      ".A......A.",
+      ".A......A.",
+      ".A......A.",
+      ".A......A.",
+      "..AAAAAA..",
+      "..........",
+      ".........."
     ],
     [
-      "..............",
-      "..............",
-      "..............",
-      "..............",
-      "..............",
-      "....BBBBBB....",
-      "....BBBBBB....",
-      "....BBBBBB....",
-      "....BBBBBB....",
-      "..............",
-      "..............",
-      "..............",
-      "..............",
-      ".............."
+      "..........",
+      "..........",
+      "..........",
+      "..AAAAAA..",
+      "..AAAAAA..",
+      "..AAAAAA..",
+      "..AAAAAA..",
+      "..........",
+      "..........",
+      ".........."
+    ]
+  ],
+  "replaceable_casings": [
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      0,
+      0
+    ],
+    [
+      3,
+      0,
+      0
+    ],
+    [
+      4,
+      0,
+      0
+    ],
+    [
+      5,
+      0,
+      0
+    ],
+    [
+      6,
+      0,
+      0
+    ],
+    [
+      7,
+      0,
+      0
+    ],
+    [
+      8,
+      0,
+      0
+    ],
+    [
+      8,
+      0,
+      1
+    ],
+    [
+      8,
+      0,
+      2
     ]
   ]
 }

@@ -1,5 +1,6 @@
 package com.appliedmoremachines.integration.jei;
 
+import com.appliedmoremachines.factory.FactoryStructure;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import mezz.jei.api.gui.widgets.IRecipeWidget;
@@ -41,7 +42,8 @@ final class FactoryPreviewWidget implements IRecipeWidget {
             pose.scale(5.35F, -5.35F, 5.35F);
             pose.mulPose(Axis.XP.rotationDegrees(rotation.pitch));
             pose.mulPose(Axis.YP.rotationDegrees(rotation.yaw));
-            pose.translate(-7.0, -2.5, -7.0);
+            pose.translate(-FactoryStructure.SIZE_X / 2.0, -FactoryStructure.SIZE_Y / 2.0,
+                    -FactoryStructure.SIZE_Z / 2.0);
 
             var minecraft = Minecraft.getInstance();
             BlockRenderDispatcher renderer = minecraft.getBlockRenderer();

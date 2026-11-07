@@ -55,6 +55,8 @@ public final class FactoryProcessingJeiRecipes {
             add(result, id, List.of(cell(r.getInput().getRepresentations())), List.of(cell(r.getOutputDefinition())));
         } else if (recipe instanceof ItemStackToChemicalRecipe r) {
             add(result, id, List.of(cell(r.getInput().getRepresentations())), List.of(cell(r.getOutputDefinition())));
+        } else if (recipe instanceof ChemicalCrystallizerRecipe r) {
+            add(result, id, List.of(chemical(r.getInput(), 1)), List.of(cell(r.getOutputDefinition())));
         } else if (recipe instanceof SawmillRecipe r) {
             var secondary = r.getInput().getRepresentations().stream().map(s -> r.getOutput(s).getMaxSecondaryOutput()).toList();
             add(result, id, List.of(cell(r.getInput().getRepresentations())),

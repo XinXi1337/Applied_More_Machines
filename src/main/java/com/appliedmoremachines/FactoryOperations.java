@@ -60,8 +60,7 @@ public final class FactoryOperations {
                 continue;
             }
             ResourceLocation actual = BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock());
-            if (com.appliedmoremachines.factory.FactoryMachineTiers.matches(cell.block(), actual)
-                    || cell.block().equals(FactoryStructure.CASING) && FactoryStructure.PATTERN.equals(actual)) {
+            if (FactoryStructure.definition().accepts(cell, actual)) {
                 continue;
             }
             if (!level.getBlockState(pos).isAir()) {

@@ -16,11 +16,11 @@ item_ids:
 
 <BlockImage id="applied_more_machines:ae_factory_controller" scale="6" />
 
-The controller runs recipes, pattern assemblies hold patterns, and casings complete the structure. Requires Mekanism and MekMM's Ultimate Oxidizing Factory; chemical processing also requires Applied Mekanistics.
+The controller runs recipes, pattern assemblies hold patterns, and casings complete the structure. Requires Mekanism. The oxidizing position uses MekMM's Ultimate Oxidizing Factory when available, otherwise Mekanism's Chemical Oxidizer. The crystallizing position uses MekMM's Ultimate Crystallizing Factory when available, otherwise Mekanism's Chemical Crystallizer. The Nutritional Liquifier remains part of the structure. The projection, placement and JEI materials use the same choices; chemical processing also requires Applied Mekanistics.
 
 ## Use
 
-1. Follow the JEI structure preview, or use the controller's **Project / Place** buttons. Both controllers share processing; 26 casing positions may become pattern assemblies.
+1. Follow the JEI structure preview, or use the controller's **Project / Place** buttons. The structure is **10×5×10**, with 204 blocks, two controllers and four required pattern assemblies. Both controllers share processing; only the 12 marked casing positions along the front edge and its two short side sections may become additional pattern assemblies; the other 150 casings must remain casings. Hold a pattern assembly to highlight the available positions.
 2. Connect controllers and pattern assemblies to an active ME network with channels. Put **AE processing patterns** in the assemblies and order through AE. Each assembly holds 36 patterns.
 3. Click the controller's **AE silhouette** with an empty cursor to view all processing recipes in JEI: inputs on the left, products on the right.
 
@@ -38,12 +38,13 @@ Loaded recipes, including data-pack changes, are supported for these machines in
 - Ultimate Purifying Factory
 - Ultimate Injecting Factory
 - Ultimate Compressing Factory
-- Ultimate Oxidizing Factory (MekMM)
+- Ultimate Oxidizing Factory (MekMM), or Chemical Oxidizer without MekMM
 - Chemical Infuser
 - Electrolytic Separator
 - Chemical Dissolution Chamber
 - Chemical Washer
 - Nutritional Liquifier
+- Chemical Crystallizer, or Ultimate Crystallizing Factory with MekMM
 - Pressurized Reaction Chamber
 - Rotary Condensentrator (both directions)
 - Thermal Evaporation Controller

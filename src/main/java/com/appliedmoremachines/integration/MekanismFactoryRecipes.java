@@ -71,6 +71,10 @@ public final class MekanismFactoryRecipes {
                 types.add(MekanismRecipeType.OXIDIZING);
                 continue;
             }
+            if (machine.equals(ResourceLocation.fromNamespaceAndPath("mekmm", "ultimate_crystallizing_factory"))) {
+                types.add(MekanismRecipeType.CRYSTALLIZING);
+                continue;
+            }
             if (!machine.getNamespace().equals("mekanism")) continue;
             switch (machine.getPath()) {
                 case "ultimate_smelting_factory" -> types.add(MekanismRecipeType.SMELTING);
@@ -82,6 +86,7 @@ public final class MekanismFactoryRecipes {
                 case "ultimate_infusing_factory" -> types.add(MekanismRecipeType.METALLURGIC_INFUSING);
                 case "chemical_infuser" -> types.add(MekanismRecipeType.CHEMICAL_INFUSING);
                 case "chemical_oxidizer" -> types.add(MekanismRecipeType.OXIDIZING);
+                case "chemical_crystallizer" -> types.add(MekanismRecipeType.CRYSTALLIZING);
                 case "electrolytic_separator" -> types.add(MekanismRecipeType.SEPARATING);
                 case "chemical_dissolution_chamber" -> types.add(MekanismRecipeType.DISSOLUTION);
                 case "chemical_washer" -> types.add(MekanismRecipeType.WASHING);
@@ -118,6 +123,10 @@ public final class MekanismFactoryRecipes {
         }
         if (recipe instanceof ItemStackToChemicalRecipe r) {
             return plan(id, inputs, outputs, List.of(item(r.getInput())), s -> amounts(r.getOutput(item(s.get(0)))));
+        }
+        if (recipe instanceof ChemicalCrystallizerRecipe r) {
+            return plan(id, inputs, outputs, List.of(chemical(r.getInput(), 1)),
+                    s -> amounts(r.getOutput(chemical(s.get(0)))));
         }
         if (recipe instanceof SawmillRecipe r) {
             return plan(id, inputs, outputs, List.of(item(r.getInput())), s -> {

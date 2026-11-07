@@ -101,8 +101,15 @@
       ]
     },
     {
+      "type": "minecraft:filter",
+      "pattern": {
+        "namespace": "applied_more_machines",
+        "path": "block/ae_factory_casing"
+      }
+    },
+    {
       "type": "minecraft:unstitch",
-      "resource": "applied_more_machines:block/ae_factory_casing_64x64",
+      "resource": "applied_more_machines:block/ae_factory_casing",
       "divisor_x": 64,
       "divisor_y": 64,
       "regions": [
@@ -147,6 +154,20 @@
           "y": 32,
           "width": 16,
           "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:block/ae_factory_casing",
+          "x": 16,
+          "y": 0,
+          "width": 16,
+          "height": 16
+        },
+        {
+          "sprite": "applied_more_machines:ctm/ae_factory_casing",
+          "x": 32,
+          "y": 32,
+          "width": 32,
+          "height": 32
         }
       ]
     },

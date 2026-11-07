@@ -144,8 +144,7 @@ public final class FactoryProjectionRenderer {
                 var actualState = loaded ? level.getBlockState(pos) : null;
                 ResourceLocation actual = loaded ? BuiltInRegistries.BLOCK.getKey(actualState.getBlock()) : null;
                 boolean conflict = actual != null && !actualState.isAir()
-                        && !com.appliedmoremachines.factory.FactoryMachineTiers.matches(cell.block(), actual)
-                        && !(cell.block().equals(FactoryStructure.CASING) && actual.equals(FactoryStructure.PATTERN));
+                        && !FactoryStructure.definition().accepts(cell, actual);
                 states.put(pos, new BlockStateInfo(
                         BuiltInRegistries.BLOCK.get(cell.block()).defaultBlockState(), conflict));
             }

@@ -43,7 +43,7 @@ public final class FactoryMachineTiers {
     private static final Map<ResourceLocation, ResourceLocation> BASES = bases();
     private static final class MachineCells {
         static final List<FactoryStructure.Cell> ALL = FactoryStructure.definition().cells().stream()
-                .filter(cell -> FAMILIES.containsKey(cell.block())).toList();
+                .filter(cell -> target(cell.block(), Tier.ULTIMATE) != null).toList();
     }
     private FactoryMachineTiers() {}
     private static Map<ResourceLocation, String> families() {
@@ -51,7 +51,8 @@ public final class FactoryMachineTiers {
         for (String type : List.of("smelting", "enriching", "crushing", "sawing", "purifying", "injecting", "infusing", "compressing")) {
             result.put(id("mekanism:ultimate_" + type + "_factory"), type);
         }
-        result.put(id("mekmm:ultimate_oxidizing_factory"), "oxidizing");
+        result.put(FactoryStructure.MEKMM_OXIDIZER, "oxidizing");
+        result.put(FactoryStructure.MEKMM_CRYSTALLIZER, "crystallizing");
         result.put(id("mekanism:chemical_dissolution_chamber"), "dissolving");
         result.put(id("mekanism:chemical_washer"), "washing");
         result.put(id("mekanism:pressurized_reaction_chamber"), "pressurised_reacting");
@@ -59,12 +60,17 @@ public final class FactoryMachineTiers {
         return Map.copyOf(result);
     }
     public static ResourceLocation target(ResourceLocation base, Tier tier) {
+        ResourceLocation family = optionalFamily(base);
+        if (!family.equals(base) && tier == Tier.ULTIMATE) return base;
+        base = family;
         var targets = TARGETS.get(base);
         return targets == null ? null : targets.get(tier.ordinal());
     }
     public static int rank(ResourceLocation base, ResourceLocation actual) {
         if (base.equals(actual)) return 0;
-        var targets = TARGETS.get(base);
+        ResourceLocation family = optionalFamily(base);
+        if (!family.equals(base) && actual.equals(family)) return -1;
+        var targets = TARGETS.get(family);
         return targets == null ? -1 : targets.indexOf(actual);
     }
     public static boolean matches(ResourceLocation base, ResourceLocation actual) { return rank(base, actual) >= 0; }
@@ -107,6 +113,11 @@ public final class FactoryMachineTiers {
         Map<ResourceLocation, ResourceLocation> result = new LinkedHashMap<>();
         TARGETS.forEach((base, targets) -> targets.forEach(target -> result.put(target, base)));
         return Map.copyOf(result);
+    }
+    private static ResourceLocation optionalFamily(ResourceLocation base) {
+        if (base.equals(FactoryStructure.CHEMICAL_OXIDIZER)) return FactoryStructure.MEKMM_OXIDIZER;
+        if (base.equals(FactoryStructure.CHEMICAL_CRYSTALLIZER)) return FactoryStructure.MEKMM_CRYSTALLIZER;
+        return base;
     }
     private static ResourceLocation id(String value) { return ResourceLocation.parse(value); }
 }
