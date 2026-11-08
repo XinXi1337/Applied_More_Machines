@@ -175,7 +175,7 @@ public final class CraftingCoreScreen extends AbstractContainerScreen<CraftingCo
     private void drawUpgradePanel(GuiGraphics graphics) {
         int x = leftPos + imageWidth;
         int width = CraftingCoreMenu.UPGRADE_PANEL_WIDTH;
-        int height = CraftingCoreMenu.UPGRADE_PANEL_HEIGHT;
+        int height = MultiplicationScreen.panelHeight(menu, CraftingCoreMenu.UPGRADE_PANEL_HEIGHT);
         graphics.fill(x, topPos, x + width, topPos + height, BORDER_COLOR);
         graphics.fill(x, topPos + 1, x + width - 1, topPos + height - 1, LIGHT_COLOR);
         graphics.fill(x, topPos + 2, x + width - 2, topPos + height - 2, PANEL_COLOR);
@@ -211,7 +211,7 @@ public final class CraftingCoreScreen extends AbstractContainerScreen<CraftingCo
     protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top, int button) {
         if (!configurationOpen && (mouseX >= left + imageWidth
                 && mouseX < left + imageWidth + CraftingCoreMenu.UPGRADE_PANEL_WIDTH
-                && mouseY >= top && mouseY < top + CraftingCoreMenu.UPGRADE_PANEL_HEIGHT
+                && mouseY >= top && mouseY < top + MultiplicationScreen.panelHeight(menu, CraftingCoreMenu.UPGRADE_PANEL_HEIGHT)
                 || mouseX >= left - TOOLBAR_WIDTH && mouseX < left
                 && mouseY >= top && mouseY < top + toolbarHeight())) {
             return false;
@@ -244,6 +244,7 @@ public final class CraftingCoreScreen extends AbstractContainerScreen<CraftingCo
 
     @Override
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (MultiplicationScreen.tooltip(graphics, font, hoveredSlot, menu.getCarried(), mouseX, mouseY, this::getTooltipFromContainerItem)) return;
         if (!configurationOpen && hoveredSlot != null
                 && (hoveredSlot.index == CraftingCoreBlockEntity.INJECTOR_SLOT || hoveredSlot.index == CraftingCoreBlockEntity.CENTER_SLOT)) {
             List<Component> lines = new ArrayList<>();
@@ -274,9 +275,11 @@ public final class CraftingCoreScreen extends AbstractContainerScreen<CraftingCo
             lines.add(Component.translatable("gui.applied_more_machines.upgrade_limit",
                     Component.translatable("item.ae2.speed_card"), CraftingCoreBlockEntity.UPGRADE_COUNT)
                     .withStyle(ChatFormatting.GRAY));
-            lines.add(Component.translatable("gui.applied_more_machines.upgrade_limit",
-                    Component.translatable("gui.applied_more_machines.overload_card"), CraftingCoreBlockEntity.UPGRADE_COUNT)
-                    .withStyle(ChatFormatting.GRAY));
+            if (ModList.get().isLoaded("ae2cs")) {
+                lines.add(Component.translatable("gui.applied_more_machines.upgrade_limit",
+                        Component.translatable("gui.applied_more_machines.overload_card"), CraftingCoreBlockEntity.UPGRADE_COUNT)
+                        .withStyle(ChatFormatting.GRAY));
+            }
             graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
         } else {
             super.renderTooltip(graphics, mouseX, mouseY);

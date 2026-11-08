@@ -1,5 +1,7 @@
 package com.appliedmoremachines.factory;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
@@ -154,6 +156,7 @@ public final class FactoryProcessor {
         task.put("Pattern", recipe.pattern().getDefinition().toTagGeneric(registries));
         task.put("Inputs", FactoryAmounts.save(recipe.match().inputs(), registries));
         task.put("Outputs", FactoryAmounts.save(recipe.match().outputs(), registries));
+        task.put("Remainders", FactoryAmounts.save(recipe.match().remainders(), registries));
         task.put("Display", GenericStack.writeTag(registries, recipe.pattern().getPrimaryOutput()));
         task.putString("Recipe", recipe.match().recipe());
         append(work, task, (int) count);
@@ -228,6 +231,7 @@ public final class FactoryProcessor {
                         task.getList("Outputs", Tag.TAG_COMPOUND));
                 var result = validated.computeIfAbsent(key, ignored -> validate(owner, task, registries));
                 boolean rejected = result.recipe() == null;
+                if (!rejected) task.put("Remainders", FactoryAmounts.save(result.remainders(), registries));
                 invalidActive |= task.getBoolean("Active") && rejected;
                 missing |= result.missing();
                 invalid |= rejected && !result.missing();
@@ -283,6 +287,17 @@ public final class FactoryProcessor {
             CompoundTag task = batch.tag;
             if (!task.getBoolean("Active")) continue;
             task.putBoolean("Active", false);
+            if (MultiplicationUpgrade.active(owner)) {
+                var outputs = FactoryAmounts.load(task.getList("Outputs", Tag.TAG_COMPOUND), registries);
+                if (outputs == null) throw new IllegalStateException("Validated output became unavailable");
+                java.util.Map<appeng.api.stacks.AEKey, Long> boosted = new java.util.LinkedHashMap<>();
+                var remainders = FactoryAmounts.load(task.getList("Remainders", Tag.TAG_COMPOUND), registries);
+                outputs.forEach((key, amount) -> {
+                    long returned = remainders == null ? 0 : Math.clamp(remainders.getOrDefault(key, 0L), 0, amount);
+                    boosted.put(key, Math.addExact(returned, MultiplicationUpgrade.boost(amount - returned)));
+                });
+                task.put("Outputs", FactoryAmounts.save(boosted, registries));
+            }
             task.putBoolean("Complete", true);
             task.put("Inputs", new ListTag());
         }
@@ -399,14 +414,14 @@ public final class FactoryProcessor {
     }
 
     private record ValidationKey(CompoundTag pattern, ListTag inputs, ListTag outputs) {}
-    private record Validated(String recipe, boolean missing, int multiplier) {}
+    private record Validated(String recipe, boolean missing, int multiplier, Map<AEKey, Long> remainders) {}
     private Validated validate(FactoryControllerBlockEntity owner, CompoundTag task, HolderLookup.Provider registries) {
         var inputs = FactoryAmounts.load(task.getList("Inputs", Tag.TAG_COMPOUND), registries);
-        if (inputs == null || chemicalUnavailable(task)) return new Validated(null, true, 1);
+        if (inputs == null || chemicalUnavailable(task)) return new Validated(null, true, 1, Map.of());
         var key = AEKey.fromTagGeneric(registries, task.getCompound("Pattern"));
         IPatternDetails details = key instanceof AEItemKey item ? decode(item, owner) : null;
         var match = details == null ? null : cachedMatch(owner, details, inputs);
-        return new Validated(match == null ? null : match.recipe(), false, match == null ? 1 : match.parallelMultiplier());
+        return new Validated(match == null ? null : match.recipe(), false, match == null ? 1 : match.parallelMultiplier(), match == null ? Map.of() : match.remainders());
     }
 
     private boolean canceled(Work task) { return data.canceled(task.job); }

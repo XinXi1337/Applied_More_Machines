@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "powah"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DAD",
+    "SOS",
+    "DAD"
+  ],
+  "key": {
+    "D": {
+      "item": "ae2:dense_energy_cell"
+    },
+    "A": {
+      "item": "ae2:crafting_accelerator"
+    },
+    "S": {
+      "item": "ae2:256k_crafting_storage"
+    },
+    "O": {
+      "item": "powah:energizing_orb"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_energizing_orb",
+    "count": 1
+  }
+}

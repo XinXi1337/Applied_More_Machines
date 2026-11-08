@@ -9,6 +9,7 @@ import com.appliedmoremachines.factory.FactoryProcessor;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
+import net.neoforged.fml.ModList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -85,7 +86,7 @@ public final class FactoryControllerScreen extends AbstractContainerScreen<Facto
     private void drawUpgradePanel(GuiGraphics graphics) {
         int x = leftPos + imageWidth;
         int width = FactoryControllerMenu.UPGRADE_PANEL_WIDTH;
-        int height = FactoryControllerMenu.UPGRADE_PANEL_HEIGHT;
+        int height = MultiplicationScreen.panelHeight(menu, FactoryControllerMenu.UPGRADE_PANEL_HEIGHT);
         graphics.fill(x, topPos, x + width, topPos + height, BORDER);
         graphics.fill(x + 1, topPos + 1, x + width - 1, topPos + height - 1, 0xffffffff);
         graphics.fill(x + 2, topPos + 2, x + width - 2, topPos + height - 2, PANEL);
@@ -222,7 +223,7 @@ public final class FactoryControllerScreen extends AbstractContainerScreen<Facto
     @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top, int button) {
         if (mouseX >= left + imageWidth && mouseX < left + imageWidth + FactoryControllerMenu.UPGRADE_PANEL_WIDTH
-                && mouseY >= top && mouseY < top + FactoryControllerMenu.UPGRADE_PANEL_HEIGHT) {
+                && mouseY >= top && mouseY < top + MultiplicationScreen.panelHeight(menu, FactoryControllerMenu.UPGRADE_PANEL_HEIGHT)) {
             return false;
         }
         return super.hasClickedOutside(mouseX, mouseY, left, top, button);
@@ -230,6 +231,7 @@ public final class FactoryControllerScreen extends AbstractContainerScreen<Facto
 
     @Override
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (MultiplicationScreen.tooltip(graphics, font, hoveredSlot, menu.getCarried(), mouseX, mouseY, this::getTooltipFromContainerItem)) return;
         if (isHovering(8, 61, 160, 34, mouseX, mouseY)) {
             List<Component> taskLines = new ArrayList<>();
             taskLines.add(Component.translatable("gui.applied_more_machines.factory.task_counts",
@@ -252,6 +254,13 @@ public final class FactoryControllerScreen extends AbstractContainerScreen<Facto
             lines.add(Component.translatable("gui.applied_more_machines.factory.merged_upgrades")
                     .withStyle(ChatFormatting.GRAY));
             for (FactoryUpgradeCards.Kind kind : FactoryUpgradeCards.Kind.values()) {
+                String requiredMod = switch (kind) {
+                    case AE_SPEED -> "ae2";
+                    case OVERLOAD -> "ae2cs";
+                    case MEKANISM_SPEED -> "mekanism";
+                    case MEKANISM_STACK -> "mekanism_extras";
+                };
+                if (!ModList.get().isLoaded(requiredMod)) continue;
                 lines.add(Component.translatable("gui.applied_more_machines.factory.upgrade_limit",
                         kind.label(), menu.combinedCount(kind), kind.limit()).withStyle(ChatFormatting.GRAY));
             }

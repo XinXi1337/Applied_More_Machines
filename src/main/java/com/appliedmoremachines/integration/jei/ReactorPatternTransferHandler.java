@@ -9,19 +9,24 @@ import appeng.menu.me.items.PatternEncodingTermMenu;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 /** Encode the factory's full-operation amounts through AE's normal ghost-slot packets. */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public final class ReactorPatternTransferHandler
         implements IRecipeTransferHandler<PatternEncodingTermMenu, ReactorProcessingJeiRecipe> {
     private final IRecipeTransferHandlerHelper helper;
@@ -31,6 +36,9 @@ public final class ReactorPatternTransferHandler
     @Override public Optional<MenuType<PatternEncodingTermMenu>> getMenuType() { return Optional.of(PatternEncodingTermMenu.TYPE); }
     @Override public RecipeType<ReactorProcessingJeiRecipe> getRecipeType() { return ReactorJeiPlugin.PROCESSING_TYPE; }
 
+    // Retain the legacy callback for compatibility with older JEI versions.
+    @SuppressWarnings({"removal", "deprecation"})
+    @Nullable
     @Override public IRecipeTransferError transferRecipe(PatternEncodingTermMenu menu, ReactorProcessingJeiRecipe recipe,
             IRecipeSlotsView slots, Player player, boolean maxTransfer, boolean doTransfer) {
         if (!recipe.fits() || recipe.inputs().size() > menu.getProcessingInputSlots().length
@@ -66,6 +74,7 @@ public final class ReactorPatternTransferHandler
         return helper.createUserErrorWithTooltip(Component.translatable("gui.applied_more_machines.factory.waiting_recipe"));
     }
 
+    @Nullable
     private static GenericStack stack(Object value) {
         AEKey key;
         long amount;

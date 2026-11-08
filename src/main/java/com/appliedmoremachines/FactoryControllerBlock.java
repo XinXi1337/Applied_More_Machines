@@ -73,6 +73,8 @@ public final class FactoryControllerBlock extends FactoryComponentBlock implemen
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
         if (!level.isClientSide && !state.is(newState.getBlock())
                 && level.getBlockEntity(pos) instanceof FactoryControllerBlockEntity controller) {
+            for (var extra : controller.multiplicationUpgrade().takeDrops())
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), extra);
             for (int slot = 0; slot < controller.getContainerSize(); slot++) {
                 ItemStack stack = controller.getItem(slot).copy();
                 if (!stack.isEmpty()) {

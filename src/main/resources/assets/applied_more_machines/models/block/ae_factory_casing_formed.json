@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "loader": "applied_more_machines:factory_casing",
+  "textures": {
+    "all": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "particle": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "down": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "up": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "north": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "south": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "west": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "east": "applied_more_machines:block/ae_factory_casing_ture/up",
+    "connected": "applied_more_machines:ctm/ae_factory_casing_ture"
+  }
+}

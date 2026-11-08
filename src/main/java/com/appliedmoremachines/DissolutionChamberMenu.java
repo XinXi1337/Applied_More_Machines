@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import com.appliedmoremachines.latex.LatexUpgrades;
 import com.appliedmoremachines.processing.AltarTransfers;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,6 +42,7 @@ public final class DissolutionChamberMenu extends AbstractContainerMenu {
             });
         }
         machine.startOpen(inventory.player);
+        if (MultiplicationUpgrade.enabled()) addSlot(new MultiplicationSlot(machine, 180, 95, () -> !configurationOpen));
     }
     private class PageSlot extends Slot {
         PageSlot(Container container, int slot, int x, int y) { super(container, slot, x, y); }
@@ -82,6 +85,8 @@ public final class DissolutionChamberMenu extends AbstractContainerMenu {
         broadcastChanges(); return true;
     }
     @Override public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack multiplicationMove = MultiplicationMenus.quickMove(this, player, index);
+        if (multiplicationMove != null) return multiplicationMove;
         if (configurationOpen || index < 0 || index >= slots.size()) return ItemStack.EMPTY;
         Slot slot = slots.get(index);
         if (!slot.isActive() || !slot.hasItem() || !slot.mayPickup(player)) return ItemStack.EMPTY;

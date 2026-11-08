@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import com.appliedmoremachines.processing.AltarInputs;
 import com.appliedmoremachines.processing.AltarTransfers;
 import net.minecraft.world.Container;
@@ -103,6 +105,7 @@ public final class InfusionPedestaMenu extends AbstractContainerMenu {
                     INPUT_X - (extra < 3 ? 2 * SLOT_SPACING : SLOT_SPACING),
                     INPUT_Y + extra % 3 * SLOT_SPACING));
         }
+        if (MultiplicationUpgrade.enabled()) addSlot(new MultiplicationSlot(altar, 180, 77, () -> !configurationOpen));
     }
 
     @Override
@@ -183,6 +186,8 @@ public final class InfusionPedestaMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
+        ItemStack multiplicationMove = MultiplicationMenus.quickMove(this, player, slotIndex);
+        if (multiplicationMove != null) return multiplicationMove;
         if (slotIndex < 0 || slotIndex >= slots.size()) {
             return ItemStack.EMPTY;
         }

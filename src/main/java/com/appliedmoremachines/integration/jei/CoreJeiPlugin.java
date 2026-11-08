@@ -33,18 +33,22 @@ public final class CoreJeiPlugin implements IModPlugin {
     }
 
     @Override public void registerCategories(IRecipeCategoryRegistration registration) {
+        if (ModBlocks.AE_CRAFTING_CORE == null) return;
         registration.addRecipeCategories(new CoreRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override public void registerRecipes(IRecipeRegistration registration) {
+        if (ModBlocks.AE_CRAFTING_CORE == null) return;
         registration.addRecipes(TYPE, CoreJeiRecipe.get(Minecraft.getInstance().level));
     }
 
     @Override public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        if (ModBlocks.AE_CRAFTING_CORE == null) return;
         registration.addRecipeCatalyst(ModBlocks.AE_CRAFTING_CORE.get(), TYPE);
     }
 
     @Override public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        if (ModBlocks.AE_CRAFTING_CORE == null) return;
         registration.addGuiContainerHandler(CraftingCoreScreen.class, new IGuiContainerHandler<CraftingCoreScreen>() {
             @Override public Collection<IGuiClickableArea> getGuiClickableAreas(
                     CraftingCoreScreen screen, double mouseX, double mouseY) {

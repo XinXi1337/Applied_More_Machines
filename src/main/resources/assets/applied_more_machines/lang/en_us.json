@@ -169,5 +169,17 @@
   "gui.applied_more_machines.reactor_jei.title": "AE Reactor Structure",
   "gui.applied_more_machines.reactor_jei.processing": "AE Reactor Processing",
   "gui.applied_more_machines.reactor.upgrade_limit": "%s (%s)",
-  "gui.applied_more_machines.reactor.tank_not_empty": "Empty the structure tanks first"
+  "gui.applied_more_machines.reactor.tank_not_empty": "Empty the structure tanks first",
+  "block.applied_more_machines.ae_brewing": "AE Brewing Machine",
+  "gui.applied_more_machines.brewing.sealed_water": "Sealed tank: no filling or draining; water is not consumed",
+  "config.jade.plugin_applied_more_machines.brewing_power_storage": "Energy",
+  "config.jade.plugin_applied_more_machines.brewing_grid_node": "ME network",
+  "gui.applied_more_machines.brewing.jei.cost": "Per batch: %s AE, %s ticks",
+  "block.applied_more_machines.ae_energizing_orb": "AE Energizing Orb",
+  "gui.applied_more_machines.energizing.cost": "Recipe energy: %s FE",
+  "gui.applied_more_machines.energizing.time": "Time depends on rod throughput and upgrades; minimum 1 tick",
+  "config.jade.plugin_applied_more_machines.energizing_power_storage": "AE Energizing Orb 能量",
+  "config.jade.plugin_applied_more_machines.energizing_grid_node": "AE Energizing Orb ME",
+  "block.applied_more_machines.inscriber_x8": "Inscriber x8",
+  "block.applied_more_machines.inscriber_x64": "Inscriber x64"
 }

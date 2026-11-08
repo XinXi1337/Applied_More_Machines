@@ -89,6 +89,8 @@ public final class InfusionPedestaBlock extends HorizontalDirectionalBlock imple
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
         if (!level.isClientSide && !state.is(newState.getBlock())
                 && level.getBlockEntity(pos) instanceof InfusionPedestaBlockEntity altar) {
+            for (var extra : altar.multiplicationUpgrade().takeDrops())
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), extra);
             for (int slot = 0; slot < altar.getContainerSize(); slot++) {
                 AltarInputs.splitForExit(altar.getItem(slot), stack ->
                         Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack));

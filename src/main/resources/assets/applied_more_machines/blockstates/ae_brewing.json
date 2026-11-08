@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "applied_more_machines:block/ae_brewing", "y": 0 },
+    "facing=east": { "model": "applied_more_machines:block/ae_brewing", "y": 90 },
+    "facing=south": { "model": "applied_more_machines:block/ae_brewing", "y": 180 },
+    "facing=west": { "model": "applied_more_machines:block/ae_brewing", "y": 270 }
+  }
+}

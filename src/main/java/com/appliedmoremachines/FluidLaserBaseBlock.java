@@ -76,6 +76,8 @@ public final class FluidLaserBaseBlock extends HorizontalDirectionalBlock implem
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
         if (!level.isClientSide && !state.is(next.getBlock())
                 && level.getBlockEntity(pos) instanceof FluidLaserBaseBlockEntity machine) {
+            for (var extra : machine.multiplicationUpgrade().takeDrops())
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), extra);
             for (int slot = 0; slot < machine.getContainerSize(); slot++) {
                 com.appliedmoremachines.processing.AltarInputs.splitForExit(machine.getItem(slot), stack ->
                         net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack));

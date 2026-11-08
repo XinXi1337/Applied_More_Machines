@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -32,7 +34,10 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class InfusionPedestaBlockEntity extends BaseContainerBlockEntity
-        implements IGridConnectedBlockEntity, IAEPowerStorage {
+        implements IGridConnectedBlockEntity, IAEPowerStorage, MultiplicationHost {
+    private final MultiplicationUpgrade multiplicationUpgrade = new MultiplicationUpgrade(this);
+    @Override public MultiplicationUpgrade multiplicationUpgrade() { return multiplicationUpgrade; }
+
     public static final int INPUT_COUNT = AltarInputs.COUNT;
     public static final int OUTPUT_SLOT = 3;
     public static final int UPGRADE_START = OUTPUT_SLOT + 1;
@@ -206,6 +211,7 @@ public final class InfusionPedestaBlockEntity extends BaseContainerBlockEntity
 
     /** Refill from the real grid, then process at most one recipe per server tick. */
     public void serverTick() {
+        if (!multiplicationUpgrade.tick()) return;
         double demand = getAEMaxPower() - getAECurrentPower();
         if (demand > 0 && mainNode.isActive()) {
             mainNode.ifPresent(grid -> {
@@ -270,6 +276,7 @@ public final class InfusionPedestaBlockEntity extends BaseContainerBlockEntity
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        multiplicationUpgrade.save(tag, registries);
         ContainerHelper.saveAllItems(tag, items, registries);
         tag.putBoolean("AutoExport", autoExport);
         tag.putInt("OutputSides", outputSides);
@@ -281,6 +288,7 @@ public final class InfusionPedestaBlockEntity extends BaseContainerBlockEntity
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        multiplicationUpgrade.load(tag, registries);
         items = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         autoExport = tag.getBoolean("AutoExport");

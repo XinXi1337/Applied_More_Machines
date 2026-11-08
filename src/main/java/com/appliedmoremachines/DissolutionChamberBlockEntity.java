@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.*;
 import appeng.api.networking.*;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -26,7 +28,10 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.*;
 
 public final class DissolutionChamberBlockEntity extends BaseContainerBlockEntity
-        implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer, DissolutionProcessor.Host {
+        implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer, DissolutionProcessor.Host, MultiplicationHost {
+    private final MultiplicationUpgrade multiplicationUpgrade = new MultiplicationUpgrade(this);
+    @Override public MultiplicationUpgrade multiplicationUpgrade() { return multiplicationUpgrade; }
+
     public static final int INPUT_COUNT = 8, OUTPUT_START = 8, UPGRADE_START = 11, SIZE = 16;
     private NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
     private FluidStack inputFluid = FluidStack.EMPTY, outputFluid = FluidStack.EMPTY;
@@ -180,6 +185,7 @@ public final class DissolutionChamberBlockEntity extends BaseContainerBlockEntit
         }
     }
     public void serverTick() {
+        if (!multiplicationUpgrade.tick()) return;
         if (level == null || level.isClientSide) return;
         if (mainNode.isActive() && getAECurrentPower() < getAEMaxPower()) mainNode.ifPresent(grid ->
                 DissolutionCharging.charge(energy, FactoryEnergy.source(grid, IActionSource.ofMachine(this))));
@@ -196,7 +202,8 @@ public final class DissolutionChamberBlockEntity extends BaseContainerBlockEntit
         for (int i = 0; i < 8; i++) items.get(i).shrink(plan.consumed()[i]);
         inputFluid.shrink(plan.fluidConsumed());
         for (int i = 0; i < 3; i++) items.set(8 + i, plan.outputs().get(i).copy());
-        outputFluid = plan.fluidOutput().copy(); setChanged();
+        outputFluid = plan.fluidOutput().copy();
+        MultiplicationOutputs.retain(this, plan.overflow()); setChanged();
     }
     @Override public void dirty() { setChanged(); }
     @Override public IManagedGridNode getMainNode() { return mainNode; }
@@ -219,14 +226,16 @@ public final class DissolutionChamberBlockEntity extends BaseContainerBlockEntit
     @Override public boolean isAEPublicPowerStorage() { return false; }
     @Override public AccessRestriction getPowerFlow() { return energy.getPowerFlow(); }
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
-        super.saveAdditional(tag, lookup); ContainerHelper.saveAllItems(tag, items, lookup);
+        super.saveAdditional(tag, lookup);
+        multiplicationUpgrade.save(tag, lookup); ContainerHelper.saveAllItems(tag, items, lookup);
         tag.put("InputFluid", inputFluid.saveOptional(lookup)); tag.put("OutputFluid", outputFluid.saveOptional(lookup));
         tag.putBoolean("AutoExport", autoExport); tag.putInt("OutputSides", outputSides);
         tag.put("DissolutionWork", processing.save(lookup));
         tag.putDouble("StoredAE", getAECurrentPower()); mainNode.saveToNBT(tag);
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
-        super.loadAdditional(tag, lookup); items = NonNullList.withSize(SIZE, ItemStack.EMPTY); ContainerHelper.loadAllItems(tag, items, lookup);
+        super.loadAdditional(tag, lookup);
+        multiplicationUpgrade.load(tag, lookup); items = NonNullList.withSize(SIZE, ItemStack.EMPTY); ContainerHelper.loadAllItems(tag, items, lookup);
         inputFluid = FluidStack.parseOptional(lookup, tag.getCompound("InputFluid")); outputFluid = FluidStack.parseOptional(lookup, tag.getCompound("OutputFluid"));
         inputFluid.setAmount(Math.min(DissolutionProcessor.CAPACITY, inputFluid.getAmount())); outputFluid.setAmount(Math.min(DissolutionProcessor.CAPACITY, outputFluid.getAmount()));
         autoExport = tag.getBoolean("AutoExport"); outputSides = tag.getInt("OutputSides") & 63;

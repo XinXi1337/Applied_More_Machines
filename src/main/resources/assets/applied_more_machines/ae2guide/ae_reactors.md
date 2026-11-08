@@ -59,3 +59,7 @@ Each round costs **8,000 AE in total**, taking stored FE from ME storage first, 
 Power, channel or structure loss preserves materials and pauses work. The interrupted round restarts its timer on recovery. Cancelling returns unconsumed inputs. When storage is full, products remain pending until space becomes available.
 
 To dismantle, the same player must click **Dismantle** eight times, with no more than one second between clicks. Empty the structure's Sky Stone Tanks first and leave enough room in ME storage or your inventory. Both controllers remain; other structure blocks and stored patterns return to ME storage first, then your inventory.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.

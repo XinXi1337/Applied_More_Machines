@@ -89,6 +89,8 @@ public final class AEFishBlock extends HorizontalDirectionalBlock implements Ent
     protected void onRemove(BlockState state, Level level, BlockPos pos,
             BlockState next, boolean moving) {
         if (!level.isClientSide && !state.is(next.getBlock()) && level.getBlockEntity(pos) instanceof AEFishBlockEntity fish) {
+            for (var extra : fish.multiplicationUpgrade().takeDrops())
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), extra);
             for (int slot = 0; slot < fish.getContainerSize(); slot++) drop(level, pos, fish.getItem(slot));
             for (ItemStack stack : fish.paidDrops()) drop(level, pos, stack);
             fish.clearContent();

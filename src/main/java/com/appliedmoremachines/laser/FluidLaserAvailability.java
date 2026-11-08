@@ -1,9 +1,9 @@
 package com.appliedmoremachines.laser;
 
-import net.neoforged.fml.ModList;
+import com.appliedmoremachines.MachineAvailability;
 
 /** Optional registry gate; no IF or IFEU implementation classes are linked here. */
 public final class FluidLaserAvailability {
-    public static boolean enabled() { return ModList.get()!=null && ModList.get().isLoaded("ifeu"); }
+    public static boolean enabled() { return MachineAvailability.enabled("ae_fluid_laser_base"); }
     private FluidLaserAvailability() {}
 }

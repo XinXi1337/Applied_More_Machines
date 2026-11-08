@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "III",
+    "ICI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "applied_more_machines:inscriber_x8"
+    },
+    "C": {
+      "item": "ae2:charged_certus_quartz_crystal"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:inscriber_x64",
+    "count": 1
+  }
+}

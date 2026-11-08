@@ -11,6 +11,7 @@ import guideme.PageAnchor;
 import java.util.*;
 import java.util.function.*;
 import net.minecraft.ChatFormatting;
+import net.neoforged.fml.ModList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -100,7 +101,7 @@ public final class FluidLaserBaseScreen extends AbstractContainerScreen<FluidLas
         int progress = (int) (40 * menu.progress());
         if (progress > 0) g.blit(TEXTURE, leftPos + 68, topPos + 94, 184, 8, progress, 30, 256, 256);
         panel(g, leftPos - 24, topPos, 24, menu.autoExport() ? 64 : 44);
-        panel(g, leftPos + 176, topPos, 24, 116);
+        panel(g, leftPos + 176, topPos, 24, MultiplicationScreen.panelHeight(menu, 116));
         for (int i = 0; i < 6; i++) {
             int x = leftPos + 180, y = topPos + 5 + i * 18;
             Icon.SLOT_BACKGROUND.getBlitter().dest(x - 1, y - 1).blit(g);
@@ -164,7 +165,7 @@ public final class FluidLaserBaseScreen extends AbstractContainerScreen<FluidLas
     }
     @Override protected boolean hasClickedOutside(double x, double y, int left, int top, int button) {
         if (configurationOpen) return false;
-        if (x >= left + 176 && x < left + 200 && y >= top && y < top + 116) return false;
+        if (x >= left + 176 && x < left + 200 && y >= top && y < top + MultiplicationScreen.panelHeight(menu, 116)) return false;
         if (x >= left - 24 && x < left && y >= top && y < top + (menu.autoExport() ? 64 : 44)) return false;
         return super.hasClickedOutside(x, y, left, top, button);
     }
@@ -182,6 +183,7 @@ public final class FluidLaserBaseScreen extends AbstractContainerScreen<FluidLas
         }
     }
     @Override protected void renderTooltip(GuiGraphics g, int mx, int my) {
+        if (MultiplicationScreen.tooltip(g, font, hoveredSlot, menu.getCarried(), mx, my, this::getTooltipFromContainerItem)) return;
         if (!configurationOpen && hoveredSlot != null && !hoveredSlot.hasItem()
                 && hoveredSlot.index >= 0 && hoveredSlot.index < FluidLaserSlots.UPGRADE
                 && menu.getCarried().isEmpty()) {
@@ -203,13 +205,19 @@ public final class FluidLaserBaseScreen extends AbstractContainerScreen<FluidLas
             }
             lines.add(Component.translatable("gui.applied_more_machines.available_upgrades"));
             if (hoveredSlot.index == FluidLaserBaseMenu.UPGRADE_START + 5) {
-                addUpgradeLine(lines, Component.translatable("gui.applied_more_machines.fluid_laser.healing"), 1);
+                if (ModList.get().isLoaded("ifeu")) {
+                    addUpgradeLine(lines, Component.translatable("gui.applied_more_machines.fluid_laser.healing"), 1);
+                }
             } else {
                 addUpgradeLine(lines, Component.translatable("item.ae2.speed_card"), 4);
-                addUpgradeLine(lines, Component.translatable("gui.applied_more_machines.overload_card"), 4);
-                addUpgradeLine(lines, text("upgrade_speed"), 1);
-                addUpgradeLine(lines, text("upgrade_efficiency"), 1);
-                addUpgradeLine(lines, text("upgrade_processing"), 1);
+                if (ModList.get().isLoaded("ae2cs")) {
+                    addUpgradeLine(lines, Component.translatable("gui.applied_more_machines.overload_card"), 4);
+                }
+                if (ModList.get().isLoaded("ifeu")) {
+                    addUpgradeLine(lines, text("upgrade_speed"), 1);
+                    addUpgradeLine(lines, text("upgrade_efficiency"), 1);
+                    addUpgradeLine(lines, text("upgrade_processing"), 1);
+                }
             }
             g.renderComponentTooltip(font, lines, mx, my);
             return;

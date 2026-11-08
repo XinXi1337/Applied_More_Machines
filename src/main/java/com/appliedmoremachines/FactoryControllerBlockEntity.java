@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -35,7 +37,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Controller UI state, shared upgrade storage and persistent structure projection. */
 public final class FactoryControllerBlockEntity extends BaseContainerBlockEntity
-        implements IGridConnectedBlockEntity {
+        implements IGridConnectedBlockEntity, MultiplicationHost {
+    private final MultiplicationUpgrade multiplicationUpgrade = new MultiplicationUpgrade(this);
+    @Override public MultiplicationUpgrade multiplicationUpgrade() { return multiplicationUpgrade; }
+
     public static final int UPGRADE_COUNT = 2;
     public static final int STATUS_IDLE = 0;
     public static final int STATUS_MATERIALS = 1;
@@ -56,6 +61,7 @@ public final class FactoryControllerBlockEntity extends BaseContainerBlockEntity
     private boolean projectionEnabled;
     private int actionStatus;
     private int actionAmount;
+    private int actionStatusTicks;
     private int dismantleClicks;
     private long lastDismantleClick = Long.MIN_VALUE;
     private UUID lastDismantler;
@@ -125,6 +131,7 @@ public final class FactoryControllerBlockEntity extends BaseContainerBlockEntity
     public void setActionStatus(int status, int amount) {
         actionStatus = status;
         actionAmount = Math.max(0, amount);
+        actionStatusTicks = status == STATUS_IDLE ? 0 : 40;
         setChanged();
     }
 
@@ -207,15 +214,16 @@ public final class FactoryControllerBlockEntity extends BaseContainerBlockEntity
     }
 
     public void serverTick() {
+        if (!multiplicationUpgrade.tick()) return;
         if (level == null || level.isClientSide) return;
+        if (actionStatusTicks > 0 && --actionStatusTicks == 0) setActionStatus(STATUS_IDLE, 0);
         if (dismantleClicks > 0 && level.getGameTime() - lastDismantleClick > 20L) {
             dismantleClicks = 0;
             lastDismantleClick = Long.MIN_VALUE;
             lastDismantler = null;
-            if (actionStatus == STATUS_DISMANTLE_PROGRESS) setActionStatus(STATUS_IDLE, 0);
             setChanged();
         }
-        if (!checked || Math.floorMod(level.getGameTime() + worldPosition.asLong(), 20) == 0) {
+        if (!checked || formation != null || Math.floorMod(level.getGameTime() + worldPosition.asLong(), 20) == 0) {
             checked = true;
             FactoryStructures.refresh(this);
         }
@@ -263,11 +271,13 @@ public final class FactoryControllerBlockEntity extends BaseContainerBlockEntity
     }
 
     @Override public void setRemoved() {
+        FactoryStructures.update(this, null);
         mainNode.destroy();
         super.setRemoved();
     }
 
     @Override public void onChunkUnloaded() {
+        FactoryStructures.update(this, null);
         mainNode.destroy();
         super.onChunkUnloaded();
     }
@@ -326,6 +336,7 @@ public final class FactoryControllerBlockEntity extends BaseContainerBlockEntity
 
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        multiplicationUpgrade.save(tag, registries);
         ContainerHelper.saveAllItems(tag, items, registries);
         tag.putBoolean("ProjectionEnabled", projectionEnabled);
         if (processingFormation() != null) {
@@ -337,6 +348,7 @@ public final class FactoryControllerBlockEntity extends BaseContainerBlockEntity
 
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        multiplicationUpgrade.load(tag, registries);
         items = NonNullList.withSize(UPGRADE_COUNT, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         formation = tag.contains("FactoryOrigin", CompoundTag.TAG_LONG)

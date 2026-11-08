@@ -37,5 +37,6 @@ FE 接口只接收能量，不向外输出，缓冲已满时停止接收；FE �
 
 <RecipeFor id="applied_more_machines:ae_infusion_pedesta" />
 
+## 倍增卡
 
-
+安装数据能源后，在原有升级槽外增加一个单张倍增卡专槽。产量取整、并行、返还物及ME余量规则见[倍增卡](multiplication_card.md)。

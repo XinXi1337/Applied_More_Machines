@@ -178,10 +178,15 @@ public final class MekanismFactoryRecipes {
             }
         }
         if (recipe instanceof ItemStackToFluidOptionalItemRecipe r) {
-            return plan(id, inputs, outputs, List.of(item(r.getInput())), s -> {
+            var matched = plan(id, inputs, outputs, List.of(item(r.getInput())), s -> {
                 var result = r.getOutput(item(s.get(0)));
                 return amounts(result.fluid(), result.optionalItem());
             });
+            if (matched == null) return null;
+            // Nutritional liquification's optional item is the food container returned by the source recipe.
+            Map<AEKey, Long> returned = new LinkedHashMap<>();
+            outputs.forEach((key, amount) -> { if (key instanceof AEItemKey) returned.put(key, amount); });
+            return new FactoryRecipes.Match(matched.recipe(), matched.inputs(), matched.outputs(), Map.copyOf(returned));
         }
         return null;
     }

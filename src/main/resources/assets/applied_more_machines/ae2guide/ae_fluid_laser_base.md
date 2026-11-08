@@ -47,3 +47,7 @@ Equipment, tanks, upgrades, output settings, rate clocks and progress persist. N
 ## JEI recipe display
 
 With JEI installed, open recipes from the machine item or the central AE progress glyph on the main screen. The click area is disabled on the configuration page or while carrying an item. Each page shows the matching lens lane's fixed catalysts, lens, one drill and output tank; all equipment is retained. One drill without upgrades produces 15 mB per round in 8 seconds for 4,000 AE total. More drills and upgrades change output and speed according to the machine rules. Hover the AE glyph on the JEI page for the base parameters.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.

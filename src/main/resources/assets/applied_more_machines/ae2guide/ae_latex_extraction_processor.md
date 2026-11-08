@@ -39,3 +39,7 @@ Batch parameters are captured at start; upgrade changes apply next batch. Workin
 ## Input and output
 
 All six sides expose item/fluid interfaces; upgrades are hidden from pipes. Log, water and latex inputs always accept all faces. Automatic adjacent output starts disabled. Enable it to select output faces using the same six-direction layout as the other machines. Latex and dry rubber share this setting, initially with no output faces selected. Automatic output pushes into selected adjacent containers. Turning it off preserves face settings, and pipes may extract from those selected faces. Rubber mode still blocks latex extraction, and reserved ingredients cannot be removed. The configuration page disables all inventory slots.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.

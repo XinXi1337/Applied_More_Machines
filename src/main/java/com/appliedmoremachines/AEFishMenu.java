@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,6 +46,7 @@ public final class AEFishMenu extends AbstractContainerMenu {
             @Override public boolean mayPlace(ItemStack stack) { return InfusionUpgradeCards.accepts(stack); }
             @Override public int getMaxStackSize() { return 1; }
         });
+        if (MultiplicationUpgrade.enabled()) addSlot(new MultiplicationSlot(machine, 180, 77, () -> !configurationOpen));
     }
     @Override public boolean stillValid(Player player) { return machine.stillValid(player); }
     public boolean isAutoExportEnabled() { return settings.get(0) != 0; }
@@ -77,6 +80,8 @@ public final class AEFishMenu extends AbstractContainerMenu {
         @Override public boolean isActive() { return !configurationOpen; }
     }
     @Override public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack multiplicationMove = MultiplicationMenus.quickMove(this, player, index);
+        if (multiplicationMove != null) return multiplicationMove;
         if (index < 0 || index >= slots.size()) return ItemStack.EMPTY;
         Slot slot = slots.get(index);
         if (!slot.isActive() || !slot.hasItem() || !slot.mayPickup(player)) return ItemStack.EMPTY;

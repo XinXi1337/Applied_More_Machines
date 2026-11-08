@@ -1,5 +1,7 @@
 package com.appliedmoremachines.latex;
 
+import com.appliedmoremachines.production.*;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -47,12 +49,13 @@ public final class LatexProcessor {
             // This unpaid batch still owns no materials. Release its reservation so all tank latex can be exported.
             clearRubber(); host.dirty();
         }
-        if (!host.powered()) return;
+        if (pendingNetwork > 0 || !host.powered()) return;
         if (logs.isEmpty() && pendingNetwork == 0 && extraction != null && extraction.amount() > 0) {
-            int count = Math.min(upgrades.parallel(), Math.min(host.input().getCount(), Integer.MAX_VALUE / extraction.amount()));
+            long unit = MultiplicationUpgrade.amount(host, extraction.amount(), 1);
+            int count = (int) Math.min(upgrades.parallel(), Math.min(host.input().getCount(), Integer.MAX_VALUE / unit));
             if (count > 0) {
                 logs = host.input().copyWithCount(count);
-                extractionAmount = extraction.amount() * count;
+                extractionAmount = Math.toIntExact(MultiplicationUpgrade.amount(host, extraction.amount(), count));
                 extractionDuration = upgrades.ticks(false); extractionTicks = 0; host.dirty();
             }
         }
@@ -60,7 +63,7 @@ public final class LatexProcessor {
             int count = Math.min(upgrades.parallel(), Math.min(host.latex() / rubber.latex(), host.water() / rubber.water()));
             count = Math.min(count, rubber.result().getMaxStackSize() / Math.max(1, rubber.result().getCount()));
             if (count > 0) {
-                result = rubber.result().copyWithCount(rubber.result().getCount() * count);
+                result = MultiplicationUpgrade.product(host, rubber.result(), count);
                 rubberLatex = rubber.latex() * count; rubberWater = rubber.water() * count;
                 rubberDuration = upgrades.ticks(true); rubberTicks = 0; host.dirty();
             }
@@ -69,9 +72,10 @@ public final class LatexProcessor {
             if (extractionTicks < extractionDuration) { extractionTicks++; host.dirty(); }
             if (extractionTicks == extractionDuration) finishExtraction(host);
         }
+        if (pendingNetwork > 0 || host instanceof MultiplicationHost machine && machine.multiplicationUpgrade().hasPending()) return;
         if (!result.isEmpty() && host.mode() != LATEX && host.powered()) {
             if (rubberTicks < rubberDuration) { rubberTicks++; host.dirty(); }
-            if (rubberTicks == rubberDuration && fits(host.output(), result)) {
+            if (rubberTicks == rubberDuration && (MultiplicationUpgrade.active(host) || fits(host.output(), result))) {
                 host.pay(); host.consumeFluids(rubberLatex, rubberWater); host.addRubber(result.copy());
                 clearRubber(); host.dirty();
             }
@@ -86,7 +90,7 @@ public final class LatexProcessor {
         };
         int local = Math.min(desired, CAPACITY - host.latex());
         long network = (long) extractionAmount - local;
-        if (network > 0 && host.sendLatex(network, true) < network) return;
+        if (network > 0 && !MultiplicationUpgrade.active(host) && host.sendLatex(network, true) < network) return;
         host.pay(); host.consumeLogs(logs.getCount()); host.addLatex(local);
         pendingNetwork = network;
         clearExtraction(); host.dirty();
@@ -122,7 +126,7 @@ public final class LatexProcessor {
         }
         ItemStack savedResult = ItemStack.parseOptional(lookup, tag.getCompound("Result"));
         time = tag.getInt("RubberDuration"); int l = tag.getInt("RubberLatex"), w = tag.getInt("RubberWater");
-        if (!savedResult.isEmpty() && savedResult.getCount() <= savedResult.getMaxStackSize()
+        if (!savedResult.isEmpty() && savedResult.getCount() <= savedResult.getMaxStackSize() * 2
                 && time > 0 && time <= 160 && l > 0 && l <= CAPACITY && w > 0 && w <= CAPACITY) {
             result = savedResult; rubberDuration = time; rubberLatex = l; rubberWater = w;
             rubberTicks = Math.clamp(tag.getInt("RubberTicks"), 0, time);

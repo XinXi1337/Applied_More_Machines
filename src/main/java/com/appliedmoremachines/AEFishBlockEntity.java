@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -35,7 +37,10 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-public final class AEFishBlockEntity extends BaseContainerBlockEntity implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer {
+public final class AEFishBlockEntity extends BaseContainerBlockEntity implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer, MultiplicationHost {
+    private final MultiplicationUpgrade multiplicationUpgrade = new MultiplicationUpgrade(this);
+    @Override public MultiplicationUpgrade multiplicationUpgrade() { return multiplicationUpgrade; }
+
     public static final int OUTPUT_COUNT = 27, ROD_SLOT = 27, UPGRADE_START = 28, UPGRADE_COUNT = 4, INVENTORY_SIZE = 32;
     private NonNullList<ItemStack> items = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
     private boolean autoExport, blockUnstackable;
@@ -121,6 +126,7 @@ public final class AEFishBlockEntity extends BaseContainerBlockEntity implements
     @Override public void onChunkUnloaded() { mainNode.destroy(); super.onChunkUnloaded(); }
 
     public void serverTick() {
+        if (!multiplicationUpgrade.tick()) return;
         if (!(level instanceof ServerLevel server)) return;
         if (mainNode.isActive()) {
             double demand = getAEMaxPower() - getAECurrentPower();
@@ -170,6 +176,7 @@ public final class AEFishBlockEntity extends BaseContainerBlockEntity implements
 
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        multiplicationUpgrade.save(tag, registries);
         ContainerHelper.saveAllItems(tag, items, registries);
         tag.putBoolean("AutoExport", autoExport); tag.putInt("OutputSides", outputSides); tag.putInt("FishingMode", mode);
         tag.putBoolean("BlockUnstackable", blockUnstackable);
@@ -177,6 +184,7 @@ public final class AEFishBlockEntity extends BaseContainerBlockEntity implements
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        multiplicationUpgrade.load(tag, registries);
         items = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         autoExport = tag.getBoolean("AutoExport"); outputSides = tag.getInt("OutputSides") & InfusionOutputSide.ALL_SIDES;

@@ -1,5 +1,7 @@
 package com.appliedmoremachines.processing;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import com.appliedmoremachines.InfusionEnergyStorage;
@@ -81,20 +83,15 @@ public final class InfusionProcessor {
         if (plan == null) {
             matchedInputs = null;
             reset();
-        } else if (fitsOutput(inventory, plan.result()) && energy.getAECurrentPower() >= plan.energyCost()) {
+        } else if ((MultiplicationUpgrade.active(inventory) || fitsOutput(inventory, plan.result())) && energy.getAECurrentPower() >= plan.energyCost()) {
             ticks++;
             if (ticks >= duration) {
                 energy.extractAEPower(plan.energyCost(), Actionable.MODULATE, PowerMultiplier.ONE);
                 for (int slot = 0; slot < AltarInputs.COUNT; slot++) {
                     inventory.setItem(AltarInputs.slot(slot), plan.inputsAfter().get(slot).copy());
                 }
-                ItemStack output = inventory.getItem(3).copy();
-                if (output.isEmpty()) {
-                    output = plan.result().copy();
-                } else {
-                    output.grow(plan.result().getCount());
-                }
-                inventory.setItem(3, output);
+                MultiplicationOutputs.deliver(inventory, new int[]{3},
+                        List.of(MultiplicationUpgrade.product(inventory, plan.result(), 1)));
                 workRecipe = null;
                 matchedInputs = null;
             }

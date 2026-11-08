@@ -1,5 +1,7 @@
 package com.appliedmoremachines.laser;
 
+import com.appliedmoremachines.production.*;
+
 import com.appliedmoremachines.latex.LatexUpgrades;
 import java.util.*;
 import net.minecraft.core.HolderLookup;
@@ -35,7 +37,7 @@ public final class FluidLaserProcessor {
         if (signature != null && !signature.equals(current)) { resetWork(); host.dirty(); }
         if (!active || !host.powered()) return;
         // Any full tank halts the whole machine, even when its catalyst group is temporarily absent.
-        for (int lane=0; lane<3; lane++) if (host.tankContents(lane).getAmount() >= CAPACITY) return;
+        for (int lane=0; lane<3 && !MultiplicationUpgrade.active(host); lane++) if (host.tankContents(lane).getAmount() >= CAPACITY) return;
         var upgrades = LatexUpgrades.stats(host,FluidLaserSlots.UPGRADE);
         int rate = FluidLaserSlots.rateLimit(FluidLaserSlots.healingTier(host.getItem(FluidLaserSlots.HEAL)));
         int[] amounts = new int[3], intervals = new int[3];
@@ -43,8 +45,8 @@ public final class FluidLaserProcessor {
         for (int lane=0; lane<3; lane++) {
             if (candidates[lane] == null) { elapsed[lane] = 0; continue; }
             any = true;
-            amounts[lane] = amount(host.getItem(FluidLaserSlots.DRILL+lane).getCount(),upgrades.parallel());
-            intervals[lane] = interval(amounts[lane],rate);
+            amounts[lane] = Math.toIntExact(MultiplicationUpgrade.amount(host, amount(host.getItem(FluidLaserSlots.DRILL+lane).getCount(), 1), upgrades.parallel()));
+            intervals[lane] = interval(amount(host.getItem(FluidLaserSlots.DRILL+lane).getCount(), upgrades.parallel()),rate);
         }
         if (!any) { if (duration != 0) { resetWork(); host.dirty(); } return; }
         if (signature == null) {
@@ -57,7 +59,7 @@ public final class FluidLaserProcessor {
             host.dirty();
         }
         // Space for every ready group's full batch is required; never reduce parallel or discard excess.
-        for (int lane=0; lane<3; lane++) if (candidates[lane] != null) {
+        for (int lane=0; lane<3; lane++) if (candidates[lane] != null && !MultiplicationUpgrade.active(host)) {
             FluidStack present = host.tankContents(lane), result = candidates[lane].fluid();
             if (!present.isEmpty() && !FluidStack.isSameFluidSameComponents(present,result)
                     || present.getAmount() + amounts[lane] > CAPACITY) return;
@@ -84,7 +86,7 @@ public final class FluidLaserProcessor {
             }
             outputs.add(entry);
         }
-        tag.put("Items",items);tag.put("Outputs",outputs);return tag;
+        tag.put("Items",items);tag.put("Outputs",outputs);tag.putBoolean("Multiplication", MultiplicationUpgrade.active(host));return tag;
     }
     private void resetWork() { ticks=0;duration=0;signature=null;planned=empty(); }
     public CompoundTag save(HolderLookup.Provider lookup) {
@@ -103,7 +105,7 @@ public final class FluidLaserProcessor {
         FluidStack[] restored=empty();boolean any=false;
         for(int i=0;i<3;i++) {
             restored[i]=FluidStack.parseOptional(lookup,fluids.getCompound(i));
-            if(restored[i].getAmount()>1330) return;
+            if(restored[i].getAmount()>1995) return;
             any|=!restored[i].isEmpty();
         }
         if(!any)return;

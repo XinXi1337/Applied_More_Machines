@@ -27,3 +27,7 @@ The whole cycle's energy must be available before sampling. Missing power, rod o
 Productive Bees fishing recipes also yield the corresponding **bee spawn eggs** in normal or modded-only mode. Their original chance rules apply, without biome restrictions; disabled bee recipes remain unavailable.
 
 Enable automatic output on the left, then select the adjacent output faces. External pipes may extract catches from any face; they cannot insert items or access the rod/upgrades.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.

@@ -89,3 +89,7 @@ Only AE2 is a direct required content mod; GuideME is already provided by AE2's 
 - **No automatic output:** enable the master switch, activate a face, and place a container that accepts the product directly beside that face.
 - **No recipe shortcut:** install JEI. The crystal shortcut is available on the main page with an empty cursor, not on the output configuration page.
 - **Only a name in Jade:** check that the altar's AE storage and network state options are enabled in Jade's plugin settings.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.

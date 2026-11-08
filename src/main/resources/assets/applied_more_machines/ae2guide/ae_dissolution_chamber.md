@@ -12,7 +12,7 @@ item_ids:
 
 <BlockImage id="applied_more_machines:ae_dissolution_chamber_front" scale="6" />
 
-Uses the world's loaded Industrial Foregoing dissolution chamber recipes, preserving ingredient quantities, components, and item/fluid outputs. The eight input slots match total quantities in any arrangement. Repeated materials may share a stack. Base duration is 8 seconds and cost is 4,000 AE per batch, including parallel batches. Processing needs an active ME network and one channel.
+Uses the world's loaded Industrial Foregoing dissolution chamber recipes and IFEU fluid crafting table, precision crafting table, and infuser recipes. Precision recipes always succeed; repeated materials in recipes with more than eight entries are merged and shown with stack counts in JEI. The eight input slots match total quantities in any arrangement. Repeated materials may share a stack. Base duration is 8 seconds and cost is 4,000 AE per batch, including parallel batches. Processing needs an active ME network and one channel.
 
 ## Inventory and fluids
 
@@ -31,3 +31,7 @@ Each Speed Card removes 0.5 seconds; each Overclocking Card removes 1 second. Fi
 Automatic adjacent output starts off. Enable it to configure six relative output faces, initially all off. Items and fluids share the selection. Only accepted quantities move into adjacent containers. Turning automatic output off keeps directions; pipes may still extract products from selected faces. The configuration page disables all inventory slots.
 
 The private 256,000 AE buffer starts empty with zero idle use. All six sides accept ME cables and FE. With an active channel, charging prioritizes AppliedFlux FE stored in ME, then network AE. Missing AppliedFlux safely falls back to AE. JEI lists the recipes; click the AE progress silhouette on the main page with an empty cursor to open the category.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.

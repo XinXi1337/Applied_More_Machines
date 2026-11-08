@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WDW",
+    "ABA",
+    "PCP"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:water_bucket"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "A": {
+      "item": "ae2:molecular_assembler"
+    },
+    "B": {
+      "item": "minecraft:brewing_stand"
+    },
+    "P": {
+      "item": "ae2:crafting_accelerator"
+    },
+    "C": {
+      "item": "ae2:controller"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:ae_brewing",
+    "count": 1
+  }
+}

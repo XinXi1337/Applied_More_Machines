@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -78,6 +80,7 @@ public final class ReactorControllerMenu extends AbstractContainerMenu {
         for (int column = 0; column < 9; column++) {
             addSlot(new Slot(inventory, column, PLAYER_X + column * SLOT_SPACING, HOTBAR_Y));
         }
+        if (MultiplicationUpgrade.enabled()) addSlot(new MultiplicationSlot(controllerInventory, 180, 26, () -> true));
     }
 
     public boolean isFormed() { return data.get(0) != 0; }
@@ -130,6 +133,8 @@ public final class ReactorControllerMenu extends AbstractContainerMenu {
     }
 
     @Override public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack multiplicationMove = MultiplicationMenus.quickMove(this, player, index);
+        if (multiplicationMove != null) return multiplicationMove;
         if (index < 0 || index >= slots.size()) return ItemStack.EMPTY;
         Slot slot = slots.get(index);
         if (!slot.hasItem() || !slot.mayPickup(player)) return ItemStack.EMPTY;

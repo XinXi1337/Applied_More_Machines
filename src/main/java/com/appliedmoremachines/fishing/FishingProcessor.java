@@ -1,5 +1,7 @@
 package com.appliedmoremachines.fishing;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -18,7 +20,7 @@ public final class FishingProcessor {
     public static final int OUTPUTS = 27;
     public static final int COST_PER_DRAW = 8_000;
     private int ticks, duration, draws, completedDraws, successfulDraws, mode;
-    private boolean paid;
+    private boolean paid, multiplied;
     private final List<ItemStack> pending = new ArrayList<>();
 
     public static int duration(int speed, int overload) { return 200 - 30 * speed - 40 * overload; }
@@ -48,6 +50,7 @@ public final class FishingProcessor {
             duration = duration(speed, overload);
             draws = draws(speed, overload);
             mode = selectedMode;
+            multiplied = MultiplicationUpgrade.active(inventory);
         }
         if (ticks < duration) { ticks++; dirty.run(); }
         if (ticks < duration || energy.getAECurrentPower() < draws * COST_PER_DRAW) return;
@@ -56,7 +59,18 @@ public final class FishingProcessor {
             // A probability miss is still one completed attempt. Waiting for a
             // successful catch here traps the progress at 100% and changes odds.
             if (!catchItems.isEmpty()) {
-                catchItems.stream().map(ItemStack::copy).forEach(pending::add);
+                // One native draw can split a single key across stacks. Round its total once.
+                var nativeOutputs = new java.util.LinkedHashMap<appeng.api.stacks.AEItemKey, Long>();
+                for (ItemStack stack : catchItems) nativeOutputs.merge(appeng.api.stacks.AEItemKey.of(stack), (long) stack.getCount(), Math::addExact);
+                for (var entry : nativeOutputs.entrySet()) {
+                    ItemStack stack = entry.getKey().toStack(1);
+                    long amount = multiplied ? MultiplicationUpgrade.boost(entry.getValue()) : entry.getValue();
+                    // Keep NBT ItemStack counts within the native disk codec limit.
+                    while (amount > 0) {
+                        int count = (int) Math.min(amount, stack.getMaxStackSize());
+                        pending.add(stack.copyWithCount(count)); amount -= count;
+                    }
+                }
                 successfulDraws++;
             }
             completedDraws++;
@@ -71,7 +85,11 @@ public final class FishingProcessor {
     }
 
     /** Atomic batch insertion preserves components, native limits and already occupied slots. */
-    private static boolean insertAll(Container inventory, List<ItemStack> stacks) {
+    private boolean insertAll(Container inventory, List<ItemStack> stacks) {
+        if (multiplied && inventory instanceof MultiplicationHost) {
+            MultiplicationOutputs.deliver(inventory, java.util.stream.IntStream.range(0, OUTPUTS).toArray(), stacks);
+            return true;
+        }
         List<ItemStack> result = new ArrayList<>();
         for (int slot = 0; slot < OUTPUTS; slot++) result.add(inventory.getItem(slot).copy());
         for (ItemStack input : stacks) {
@@ -96,7 +114,7 @@ public final class FishingProcessor {
 
     private void reset() {
         ticks = duration = draws = completedDraws = successfulDraws = mode = 0;
-        paid = false;
+        paid = false; multiplied = false;
         pending.clear();
     }
 
@@ -106,7 +124,7 @@ public final class FishingProcessor {
         tag.putInt("CompletedDraws", completedDraws); tag.putInt("SuccessfulDraws", successfulDraws); tag.putInt("Mode", mode); tag.putBoolean("Paid", paid);
         ListTag list = new ListTag();
         for (ItemStack stack : pending) if (!stack.isEmpty()) list.add(stack.save(registries));
-        tag.put("Pending", list);
+        tag.put("Pending", list); tag.putBoolean("Multiplied", multiplied);
         return tag;
     }
 
@@ -119,7 +137,7 @@ public final class FishingProcessor {
         // Old saves counted only successful draws; keep their exact unpaid loot.
         successfulDraws = tag.contains("SuccessfulDraws", Tag.TAG_INT)
                 ? Math.clamp(tag.getInt("SuccessfulDraws"), 0, completedDraws) : completedDraws;
-        mode = Math.clamp(tag.getInt("Mode"), 0, 7); paid = tag.getBoolean("Paid");
+        mode = Math.clamp(tag.getInt("Mode"), 0, 7); paid = tag.getBoolean("Paid"); multiplied = tag.getBoolean("Multiplied");
         ListTag list = tag.getList("Pending", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) ItemStack.parse(registries, list.getCompound(i)).filter(s -> !s.isEmpty()).ifPresent(pending::add);
         if (paid && (completedDraws != draws || successfulDraws == 0 || ticks < duration)) reset();

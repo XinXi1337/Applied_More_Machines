@@ -37,22 +37,26 @@ public final class AltarJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
+        if (ModBlocks.AE_INFUSION_PEDESTA == null) return;
         registration.addRecipeCategories(new AltarRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        if (ModBlocks.AE_INFUSION_PEDESTA == null) return;
         var level = Minecraft.getInstance().level;
         if (level != null) registration.addRecipes(TYPE, SeedRecipes.get(level));
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        if (ModBlocks.AE_INFUSION_PEDESTA == null) return;
         registration.addRecipeCatalyst(ModBlocks.AE_INFUSION_PEDESTA.get(), TYPE);
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        if (ModBlocks.AE_INFUSION_PEDESTA == null) return;
         registration.addGuiContainerHandler(InfusionPedestaScreen.class, new IGuiContainerHandler<InfusionPedestaScreen>() {
             private final IGuiClickableArea area = new IGuiClickableArea() {
                 @Override public Rect2i getArea() {

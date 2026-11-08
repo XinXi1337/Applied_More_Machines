@@ -11,19 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.chemical.ChemicalStack;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 /** Encode the factory's full-operation amounts through AE's normal ghost-slot packets. */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public final class FactoryPatternTransferHandler
         implements IRecipeTransferHandler<PatternEncodingTermMenu, FactoryProcessingJeiRecipe> {
     private final IRecipeTransferHandlerHelper helper;
@@ -33,6 +38,9 @@ public final class FactoryPatternTransferHandler
     @Override public Optional<MenuType<PatternEncodingTermMenu>> getMenuType() { return Optional.of(PatternEncodingTermMenu.TYPE); }
     @Override public RecipeType<FactoryProcessingJeiRecipe> getRecipeType() { return FactoryJeiPlugin.PROCESSING_TYPE; }
 
+    // Retain the legacy callback for compatibility with older JEI versions.
+    @SuppressWarnings({"removal", "deprecation"})
+    @Nullable
     @Override public IRecipeTransferError transferRecipe(PatternEncodingTermMenu menu, FactoryProcessingJeiRecipe recipe,
             IRecipeSlotsView slots, Player player, boolean maxTransfer, boolean doTransfer) {
         FactoryTransferDiagnostics.handler(menu, recipe, doTransfer);
@@ -70,6 +78,7 @@ public final class FactoryPatternTransferHandler
         return helper.createUserErrorWithTooltip(Component.translatable("gui.applied_more_machines.factory.waiting_chemical"));
     }
 
+    @Nullable
     private static GenericStack stack(Object value) {
         AEKey key;
         long amount;

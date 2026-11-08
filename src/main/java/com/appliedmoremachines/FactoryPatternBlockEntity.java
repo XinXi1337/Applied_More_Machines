@@ -5,14 +5,18 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.patternprovider.PatternContainer;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -29,10 +33,12 @@ public final class FactoryPatternBlockEntity extends BaseContainerBlockEntity
         implements IGridConnectedBlockEntity, PatternContainer {
     public static final int SLOT_COUNT = 36;
 
+    private boolean structureFormed;
+
     private NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
     private final IManagedGridNode mainNode = GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
-            .setInWorldNode(true).setFlags(GridFlags.REQUIRE_CHANNEL).setTagName("MainNode").setIdlePowerUsage(0)
+            .setInWorldNode(true).setExposedOnSides(Set.of()).setFlags(GridFlags.REQUIRE_CHANNEL).setTagName("MainNode").setIdlePowerUsage(0)
             .setVisualRepresentation(ModBlocks.AE_FACTORY_PATTERN.get());
 
     // Share the existing Container/NBT inventory with terminals and uploaders.
@@ -55,8 +61,29 @@ public final class FactoryPatternBlockEntity extends BaseContainerBlockEntity
         super.setChanged();
         com.appliedmoremachines.factory.FactoryRecipes.invalidate();
     }
-    @Override public IGrid getGrid() { return mainNode.getGrid(); }
-    @Override public boolean isVisibleInTerminal() { return mainNode.isActive(); }
+    public boolean isStructureFormed() { return structureFormed; }
+
+    /** Keep one managed node for its whole lifetime; exposure changes sever existing cable links. */
+    public void setStructureFormed(boolean formed) {
+        if (structureFormed == formed) return;
+        structureFormed = formed;
+        // Neighbors must see the new host availability while AE2 rebuilds connections.
+        if (level != null && !level.isClientSide) level.invalidateCapabilities(worldPosition);
+        mainNode.setExposedOnSides(formed ? EnumSet.allOf(Direction.class) : Set.of());
+        // Network tools can also create links that are not tied to a block face.
+        if (!formed && mainNode.getNode() != null) {
+            for (var connection : List.copyOf(mainNode.getNode().getConnections())) connection.destroy();
+        }
+        com.appliedmoremachines.factory.FactoryRecipes.invalidate();
+    }
+
+    @Override public IGridNode getGridNode() { return structureFormed ? mainNode.getNode() : null; }
+    @Override public IGridNode getGridNode(Direction side) {
+        return structureFormed ? IGridConnectedBlockEntity.super.getGridNode(side) : null;
+    }
+    @Override public IGridNode getActionableNode() { return getGridNode(); }
+    @Override public IGrid getGrid() { return structureFormed ? mainNode.getGrid() : null; }
+    @Override public boolean isVisibleInTerminal() { return structureFormed && mainNode.isActive(); }
     @Override public InternalInventory getTerminalPatternInventory() { return terminalPatterns; }
     @Override public long getTerminalSortOrder() { return worldPosition.asLong(); }
 
@@ -136,5 +163,7 @@ public final class FactoryPatternBlockEntity extends BaseContainerBlockEntity
         items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         mainNode.loadFromNBT(tag);
+        structureFormed = false;
+        mainNode.setExposedOnSides(Set.of());
     }
 }

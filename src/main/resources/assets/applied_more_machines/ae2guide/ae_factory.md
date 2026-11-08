@@ -74,3 +74,7 @@ After all orders finish, hold enough Mekanism Extras **tier installers** and rig
 | Infinite | 64 | (Card-adjusted parallelism +2048) ×2 | 1 tick |
 
 Only the current machine tier contributes a bonus. Without cards, parallelism is **264 / 520 / 2056 / 4112** respectively. Absolute and Supreme can skip lower tiers. Cosmic requires Supreme machines; Infinite requires Cosmic machines. Running, queued and pending storage-return orders all block upgrades.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.

@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.*;
 import appeng.api.networking.*;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -25,7 +27,10 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public final class FluidLaserBaseBlockEntity extends BaseContainerBlockEntity
-        implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer, FluidLaserProcessor.Host {
+        implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer, FluidLaserProcessor.Host, MultiplicationHost {
+    private final MultiplicationUpgrade multiplicationUpgrade = new MultiplicationUpgrade(this);
+    @Override public MultiplicationUpgrade multiplicationUpgrade() { return multiplicationUpgrade; }
+
     private NonNullList<ItemStack> items = NonNullList.withSize(FluidLaserSlots.SIZE, ItemStack.EMPTY);
     private final FluidStack[] fluids = {FluidStack.EMPTY,FluidStack.EMPTY,FluidStack.EMPTY};
     private boolean autoExport;
@@ -130,6 +135,7 @@ public final class FluidLaserBaseBlockEntity extends BaseContainerBlockEntity
         }
     }
     public void serverTick(){
+        if (!multiplicationUpgrade.tick()) return;
         if(level==null||level.isClientSide)return;
         if(mainNode.isActive()&&getAECurrentPower()<getAEMaxPower()) mainNode.ifPresent(grid ->
             DissolutionCharging.charge(energy,FactoryEnergy.source(grid,IActionSource.ofMachine(this))));
@@ -139,7 +145,7 @@ public final class FluidLaserBaseBlockEntity extends BaseContainerBlockEntity
     @Override public boolean powered(){return getAECurrentPower()>=FluidLaserProcessor.COST;}
     @Override public void commit(FluidStack[] outputs){
         extractAEPower(FluidLaserProcessor.COST,Actionable.MODULATE,PowerMultiplier.ONE);
-        for(int i=0;i<3;i++)if(!outputs[i].isEmpty())fluids[i]=outputs[i].copyWithAmount(fluids[i].getAmount()+outputs[i].getAmount());
+        for(int i=0;i<3;i++)if(!outputs[i].isEmpty())fluids[i]=MultiplicationOutputs.fluid(this, fluids[i], outputs[i], FluidLaserProcessor.CAPACITY);
         setChanged();
     }
     @Override public void dirty(){setChanged();}
@@ -162,13 +168,15 @@ public final class FluidLaserBaseBlockEntity extends BaseContainerBlockEntity
     @Override public boolean isAEPublicPowerStorage(){return false;}
     @Override public AccessRestriction getPowerFlow(){return energy.getPowerFlow();}
     @Override protected void saveAdditional(CompoundTag tag,HolderLookup.Provider lookup){
-        super.saveAdditional(tag,lookup);ContainerHelper.saveAllItems(tag,items,lookup);
+        super.saveAdditional(tag,lookup);
+        multiplicationUpgrade.save(tag, lookup);ContainerHelper.saveAllItems(tag,items,lookup);
         for(int i=0;i<3;i++)tag.put("Fluid"+i,fluids[i].saveOptional(lookup));
         tag.putBoolean("AutoExport",autoExport);tag.putInt("OutputSides",outputSides);
         tag.put("LaserWork",processing.save(lookup));tag.putDouble("StoredAE",getAECurrentPower());mainNode.saveToNBT(tag);
     }
     @Override protected void loadAdditional(CompoundTag tag,HolderLookup.Provider lookup){
-        super.loadAdditional(tag,lookup);items=NonNullList.withSize(FluidLaserSlots.SIZE,ItemStack.EMPTY);ContainerHelper.loadAllItems(tag,items,lookup);
+        super.loadAdditional(tag,lookup);
+        multiplicationUpgrade.load(tag, lookup);items=NonNullList.withSize(FluidLaserSlots.SIZE,ItemStack.EMPTY);ContainerHelper.loadAllItems(tag,items,lookup);
         for(int i=0;i<3;i++){
             fluids[i]=FluidStack.parseOptional(lookup,tag.getCompound("Fluid"+i));
             fluids[i].setAmount(Math.min(FluidLaserProcessor.CAPACITY,fluids[i].getAmount()));

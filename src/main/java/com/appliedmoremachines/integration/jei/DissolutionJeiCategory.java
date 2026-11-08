@@ -35,14 +35,20 @@ public final class DissolutionJeiCategory implements IRecipeCategory<Dissolution
     @Override public int getWidth() { return 176; }
     @Override public int getHeight() { return 100; }
     @Override public ResourceLocation getRegistryName(DissolutionRecipes.Entry recipe) { return recipe.id(); }
+    @Override public boolean isHandled(DissolutionRecipes.Entry recipe) { return recipe.displayInputs().size() <= 8; }
     @Override public void setRecipe(IRecipeLayoutBuilder builder, DissolutionRecipes.Entry recipe, IFocusGroup focuses) {
         // Keep JEI's native side column at the lower right, clear of tanks and labels.
         builder.moveRecipeTransferButton(180, 85);
-        for (int i = 0; i < recipe.inputs().size(); i++) {
+        var inputs = recipe.displayInputs();
+        if (inputs.size() > 8) return;
+        for (int i = 0; i < inputs.size(); i++) {
             int[] pos = DissolutionChamberMenu.INPUT_POSITIONS[i];
-            builder.addSlot(RecipeIngredientRole.INPUT, pos[0], pos[1]).setSlotName("input_" + i).addIngredients(recipe.inputs().get(i));
+            var input = inputs.get(i);
+            builder.addSlot(RecipeIngredientRole.INPUT, pos[0], pos[1]).setSlotName("input_" + i)
+                    .addItemStacks(Arrays.stream(input.ingredient().getItems()).filter(input.ingredient()::test)
+                            .map(stack -> stack.copyWithCount(input.count())).toList());
         }
-        fluid(builder, RecipeIngredientRole.INPUT, "input_fluid", 50, 39, 14,
+        if (recipe.fluid() != null) fluid(builder, RecipeIngredientRole.INPUT, "input_fluid", 50, 39, 14,
                 Arrays.stream(recipe.fluid().getFluids()).map(FluidStack::copy).toList());
         if (!recipe.output().isEmpty()) {
             int remaining = recipe.output().getCount(), limit = Math.min(64, recipe.output().getMaxStackSize());

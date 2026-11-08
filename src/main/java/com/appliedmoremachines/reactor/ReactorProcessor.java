@@ -1,5 +1,7 @@
 package com.appliedmoremachines.reactor;
 
+import com.appliedmoremachines.production.*;
+
 import com.appliedmoremachines.factory.FactoryJobContext;
 
 import com.appliedmoremachines.factory.FactoryRoundPlanner;
@@ -291,6 +293,13 @@ public final class ReactorProcessor {
             CompoundTag task = batch.tag;
             if (!task.getBoolean("Active")) continue;
             task.putBoolean("Active", false);
+            if (MultiplicationUpgrade.active(owner)) {
+                var outputs = FactoryAmounts.load(task.getList("Outputs", Tag.TAG_COMPOUND), registries);
+                if (outputs == null) throw new IllegalStateException("Validated output became unavailable");
+                java.util.Map<appeng.api.stacks.AEKey, Long> boosted = new java.util.LinkedHashMap<>();
+                outputs.forEach((key, amount) -> boosted.put(key, MultiplicationUpgrade.boost(amount)));
+                task.put("Outputs", FactoryAmounts.save(boosted, registries));
+            }
             task.putBoolean("Complete", true);
             task.put("Inputs", new ListTag());
         }

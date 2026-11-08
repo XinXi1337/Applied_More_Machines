@@ -142,7 +142,7 @@
   "gui.applied_more_machines.latex.water": "水",
   "gui.applied_more_machines.latex.upgrade_speed": "插件：速度",
   "gui.applied_more_machines.latex.upgrade_efficiency": "插件：效率",
-  "gui.applied_more_machines.latex.upgrade_processing": "插件：加工",
+  "gui.applied_more_machines.latex.upgrade_processing": "插件：处理",
   "gui.applied_more_machines.latex.jei.extraction": "原木提取胶乳",
   "gui.applied_more_machines.latex.jei.rubber": "干橡胶加工",
   "gui.applied_more_machines.latex.jei.time": "基础耗时：%s秒",
@@ -169,5 +169,17 @@
   "gui.applied_more_machines.reactor_jei.title": "AE反应堆结构",
   "gui.applied_more_machines.reactor_jei.processing": "AE反应堆加工",
   "gui.applied_more_machines.reactor.upgrade_limit": "%s（%s）",
-  "gui.applied_more_machines.reactor.tank_not_empty": "请先清空结构中的陨石储罐"
+  "gui.applied_more_machines.reactor.tank_not_empty": "请先清空结构中的陨石储罐",
+  "block.applied_more_machines.ae_brewing": "AE炼药机",
+  "gui.applied_more_machines.brewing.sealed_water": "封闭水槽：不可注入或抽取，不消耗水",
+  "config.jade.plugin_applied_more_machines.brewing_power_storage": "能量",
+  "config.jade.plugin_applied_more_machines.brewing_grid_node": "ME网络",
+  "gui.applied_more_machines.brewing.jei.cost": "每批：%s AE，%s tick",
+  "block.applied_more_machines.ae_energizing_orb": "AE充能台",
+  "gui.applied_more_machines.energizing.cost": "配方能耗：%s FE",
+  "gui.applied_more_machines.energizing.time": "时间由充能棒输出与升级决定，最低 1 tick",
+  "config.jade.plugin_applied_more_machines.energizing_power_storage": "AE充能台 能量",
+  "config.jade.plugin_applied_more_machines.energizing_grid_node": "AE充能台 ME",
+  "block.applied_more_machines.inscriber_x8": "压印器 x8",
+  "block.applied_more_machines.inscriber_x64": "压印器 x64"
 }

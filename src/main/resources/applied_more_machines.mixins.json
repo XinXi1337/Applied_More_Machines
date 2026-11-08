@@ -2,7 +2,28 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.appliedmoremachines.mixin",
+  "plugin": "com.appliedmoremachines.compat.mixin.AcceleratedRenderingMixinPlugin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": ["FactoryCpuMixin", "FactoryAdvancedCpuMixin", "FactoryEcoCpuMixin", "FactoryTimeWheelCpuMixin", "FactoryTrinityCpuMixin", "FactoryCraftingLinkMixin"],
-  "injectors": { "defaultRequire": 1 }
+  "mixins": [
+    "FactoryCpuMixin",
+    "FactoryAdvancedCpuMixin",
+    "FactoryEcoCpuMixin",
+    "FactoryTimeWheelCpuMixin",
+    "FactoryTrinityCpuMixin",
+    "FactoryCraftingLinkMixin",
+    "DevelopmentGameTestMixin",
+    "ParallelInscriberMixin",
+    "ParallelInscriberMenuMixin",
+    "ParallelInscriberClickMixin",
+    "MultiplicationMenuAccess",
+    "ParallelInscriberDataOutputMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "MultiplicationScreenMixin",
+    "MultiplicationUpgradePanelMixin",
+    "MultiplicationUpgradePanelCountMixin"
+  ]
 }

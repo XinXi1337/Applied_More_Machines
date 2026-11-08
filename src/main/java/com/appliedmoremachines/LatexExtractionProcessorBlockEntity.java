@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import appeng.api.config.*;
 import appeng.api.networking.*;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -29,7 +31,10 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.*;
 
 public final class LatexExtractionProcessorBlockEntity extends BaseContainerBlockEntity
-        implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer, LatexProcessor.Host {
+        implements IGridConnectedBlockEntity, IAEPowerStorage, WorldlyContainer, LatexProcessor.Host, MultiplicationHost {
+    private final MultiplicationUpgrade multiplicationUpgrade = new MultiplicationUpgrade(this);
+    @Override public MultiplicationUpgrade multiplicationUpgrade() { return multiplicationUpgrade; }
+
     public static final int SIZE = 7, UPGRADE_START = 2, UPGRADE_COUNT = 5;
     public static final int LOG_INPUT = 0, WATER_INPUT = 1, LATEX_INPUT = 2, LATEX_OUTPUT = 3, RUBBER_OUTPUT = 4;
     private NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
@@ -243,6 +248,7 @@ public final class LatexExtractionProcessorBlockEntity extends BaseContainerBloc
         }
     }
     public void serverTick() {
+        if (!multiplicationUpgrade.tick()) return;
         if (level == null || level.isClientSide) return;
         if (mainNode.isActive()) {
             double demand = getAEMaxPower() - getAECurrentPower();
@@ -267,7 +273,7 @@ public final class LatexExtractionProcessorBlockEntity extends BaseContainerBloc
     @Override public void consumeFluids(int l, int w) { latex -= l; water -= w; setChanged(); }
     @Override public void addLatex(int count) { latex += count; if (count > 0) setChanged(); }
     @Override public void addRubber(ItemStack result) {
-        if (output().isEmpty()) setItem(1, result); else { output().grow(result.getCount()); setChanged(); }
+        MultiplicationOutputs.deliver(this, new int[]{1}, java.util.List.of(result));
     }
     @Override public void dirty() { setChanged(); }
     @Override public IManagedGridNode getMainNode() { return mainNode; }
@@ -290,13 +296,15 @@ public final class LatexExtractionProcessorBlockEntity extends BaseContainerBloc
     @Override public boolean isAEPublicPowerStorage() { return false; }
     @Override public AccessRestriction getPowerFlow() { return energy.getPowerFlow(); }
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
-        super.saveAdditional(tag, lookup); ContainerHelper.saveAllItems(tag, items, lookup);
+        super.saveAdditional(tag, lookup);
+        multiplicationUpgrade.save(tag, lookup); ContainerHelper.saveAllItems(tag, items, lookup);
         tag.putInt("Latex", latex); tag.putInt("Water", water); tag.putInt("LatexMode", mode);
         tag.putBoolean("AutoExport", autoExport); tag.putIntArray("TransferSides", sides);
         tag.put("LatexWork", processing.save(lookup)); tag.putDouble("StoredAE", getAECurrentPower()); mainNode.saveToNBT(tag);
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
-        super.loadAdditional(tag, lookup); items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
+        super.loadAdditional(tag, lookup);
+        multiplicationUpgrade.load(tag, lookup); items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, lookup);
         latex = Math.clamp(tag.getInt("Latex"), 0, 16000); water = Math.clamp(tag.getInt("Water"), 0, 16000);
         mode = Math.clamp(tag.getInt("LatexMode"), 0, 3); autoExport = tag.getBoolean("AutoExport");

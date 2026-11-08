@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -30,7 +32,10 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 /** Fusion inventory with equipment-gated inputs and an in-place catalyst/product slot. */
 public final class CraftingCoreBlockEntity extends BaseContainerBlockEntity
-        implements IGridConnectedBlockEntity, IAEPowerStorage {
+        implements IGridConnectedBlockEntity, IAEPowerStorage, MultiplicationHost {
+    private final MultiplicationUpgrade multiplicationUpgrade = new MultiplicationUpgrade(this);
+    @Override public MultiplicationUpgrade multiplicationUpgrade() { return multiplicationUpgrade; }
+
     public static final int INPUT_COUNT = 16;
     public static final int INJECTOR_SLOT = 16;
     public static final int CENTER_SLOT = 17;
@@ -159,6 +164,7 @@ public final class CraftingCoreBlockEntity extends BaseContainerBlockEntity
     @Override public void onChunkUnloaded() { mainNode.destroy(); super.onChunkUnloaded(); }
 
     public void serverTick() {
+        if (!multiplicationUpgrade.tick()) return;
         if (level == null || level.isClientSide) return;
         double demand = getAEMaxPower() - getAECurrentPower();
         if (demand > 0 && mainNode.isActive()) mainNode.ifPresent(grid -> injectAEPower(
@@ -173,8 +179,11 @@ public final class CraftingCoreBlockEntity extends BaseContainerBlockEntity
             processing.tick(this, energy, CoreRecipes.get(level), recipe -> recipe.prepare(level, level.registryAccess(), this),
                     CoreInjectors.duration(speed, overload), plan -> {
                         for (int slot = 0; slot < INPUT_COUNT; slot++) setItem(slot, plan.materialsAfter().get(slot).copy());
+                        // Replace the consumed catalyst before planning output capacity.
+                        setItem(CENTER_SLOT, ItemStack.EMPTY);
                         result = true;
-                        setItem(CENTER_SLOT, plan.result().copy());
+                        MultiplicationOutputs.deliver(this, new int[]{CENTER_SLOT},
+                                java.util.List.of(MultiplicationUpgrade.product(this, plan.result(), 1)));
                     }, this::setChanged);
         }
         if (result && autoExport && outputSides != 0) {
@@ -245,6 +254,7 @@ public final class CraftingCoreBlockEntity extends BaseContainerBlockEntity
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        multiplicationUpgrade.save(tag, registries);
         ContainerHelper.saveAllItems(tag, items, registries);
         tag.putBoolean("AutoExport", autoExport);
         tag.putInt("OutputSides", outputSides);
@@ -258,6 +268,7 @@ public final class CraftingCoreBlockEntity extends BaseContainerBlockEntity
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        multiplicationUpgrade.load(tag, registries);
         items = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         autoExport = tag.getBoolean("AutoExport");

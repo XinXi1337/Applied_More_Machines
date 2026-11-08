@@ -1,5 +1,7 @@
 package com.appliedmoremachines;
 
+import com.appliedmoremachines.production.*;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -103,6 +105,7 @@ public final class CraftingCoreMenu extends AbstractContainerMenu {
                 @Override public int getMaxStackSize() { return 1; }
             });
         }
+        if (MultiplicationUpgrade.enabled()) addSlot(new MultiplicationSlot(core, 180, 77, () -> !configurationOpen));
     }
 
     @Override
@@ -170,6 +173,8 @@ public final class CraftingCoreMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
+        ItemStack multiplicationMove = MultiplicationMenus.quickMove(this, player, slotIndex);
+        if (multiplicationMove != null) return multiplicationMove;
         return inventoryChange(player, () -> quickMove(player, slotIndex), ItemStack.EMPTY);
     }
 

@@ -1,0 +1,8 @@
+{
+  "parent": "powah:block/energizing_orb",
+  "textures": {
+    "0": "applied_more_machines:block/ae_energizing_orb/energizing_orb",
+    "1": "applied_more_machines:block/ae_energizing_orb/energizing_orb_base",
+    "particle": "applied_more_machines:block/ae_energizing_orb/energizing_orb"
+  }
+}

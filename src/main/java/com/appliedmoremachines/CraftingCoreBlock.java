@@ -94,6 +94,8 @@ public final class CraftingCoreBlock extends HorizontalDirectionalBlock implemen
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
         if (!level.isClientSide && !state.is(newState.getBlock())
                 && level.getBlockEntity(pos) instanceof CraftingCoreBlockEntity core) {
+            for (var extra : core.multiplicationUpgrade().takeDrops())
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), extra);
             for (int slot = 0; slot < core.getContainerSize(); slot++) {
                 com.appliedmoremachines.processing.AltarInputs.splitForExit(core.getItem(slot), stack ->
                         Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack));

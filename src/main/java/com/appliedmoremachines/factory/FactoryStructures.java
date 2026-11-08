@@ -1,12 +1,17 @@
 package com.appliedmoremachines.factory;
 
 import com.appliedmoremachines.FactoryControllerBlockEntity;
+import com.appliedmoremachines.FactoryCasingBlock;
+import com.appliedmoremachines.FactoryPatternBlock;
+import com.appliedmoremachines.FactoryPatternBlockEntity;
 import java.util.LinkedHashSet;
+import java.util.HashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.fml.ModList;
 
 /** Authoritative formation updates; optional compatibility uses registry IDs only. */
@@ -109,6 +114,30 @@ public final class FactoryStructures {
                     member.setFormation(belongsToNext ? next : null);
                     if (belongsToNext) member.setProjectionState(controller.projectionEnabled());
                 }
+            }
+        }
+        // Publish controller identity before AE2 exposure changes can call back into factory services.
+        if (previous != null && !previous.equals(next)) updateParts(level, previous, next);
+        if (next != null) updateParts(level, next, next);
+    }
+
+    private static void updateParts(Level level, FactoryFormation formation, FactoryFormation next) {
+        var retained = new HashSet<BlockPos>();
+        boolean same = formation.equals(next);
+        if (next != null && !same) {
+            for (var cell : FactoryStructure.definition().cells()) retained.add(next.position(cell.offset()));
+        }
+        for (var cell : FactoryStructure.definition().cells()) {
+            if (!cell.block().equals(FactoryStructure.CASING) && !cell.block().equals(FactoryStructure.PATTERN)) continue;
+            BlockPos pos = formation.position(cell.offset());
+            if (level.isOutsideBuildHeight(pos) || !level.hasChunkAt(pos)) continue;
+            boolean formed = same || retained.contains(pos);
+            var state = level.getBlockState(pos);
+            if (state.getBlock() instanceof FactoryCasingBlock && state.getValue(FactoryCasingBlock.FORMED) != formed) {
+                level.setBlock(pos, state.setValue(FactoryCasingBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+            }
+            if (state.getBlock() instanceof FactoryPatternBlock && level.getBlockEntity(pos) instanceof FactoryPatternBlockEntity pattern) {
+                pattern.setStructureFormed(formed);
             }
         }
     }

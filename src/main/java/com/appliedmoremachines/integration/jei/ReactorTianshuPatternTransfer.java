@@ -4,17 +4,22 @@ import com.moakiee.ae2lt.client.tianshu.TianshuRecipeTransferContext;
 import com.moakiee.ae2lt.menu.TianshuPatternEncodingTermMenu;
 import com.moakiee.ae2lt.menu.TianshuWirelessPatternEncodingTermMenu;
 import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.fml.ModList;
+import org.jetbrains.annotations.Nullable;
 
 /** Optional AE2LT bridge: JEI resolves the exact menu class, not its AE2 superclass. */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 final class ReactorTianshuPatternTransfer<M extends TianshuPatternEncodingTermMenu>
         implements IRecipeTransferHandler<M, ReactorProcessingJeiRecipe> {
     private final Class<M> menuClass;
@@ -47,6 +52,9 @@ final class ReactorTianshuPatternTransfer<M extends TianshuPatternEncodingTermMe
     @Override public Optional<MenuType<M>> getMenuType() { return Optional.of(menuType); }
     @Override public RecipeType<ReactorProcessingJeiRecipe> getRecipeType() { return ReactorJeiPlugin.PROCESSING_TYPE; }
 
+    // Retain the legacy callback for compatibility with older JEI versions.
+    @SuppressWarnings({"removal", "deprecation"})
+    @Nullable
     @Override public IRecipeTransferError transferRecipe(M menu, ReactorProcessingJeiRecipe recipe,
             IRecipeSlotsView slots, Player player, boolean maxTransfer, boolean doTransfer) {
         var error = delegate.transferRecipe(menu, recipe, slots, player, maxTransfer, false);

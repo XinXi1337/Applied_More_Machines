@@ -1,47 +1,151 @@
-// Local APIs remain compileOnly. Version suffixes are discovered from user-managed files.
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import java.nio.file.Files
+import java.security.DigestInputStream
+import java.security.MessageDigest
+import java.util.regex.Pattern
+import java.util.zip.ZipFile
+
+// Compile APIs are pinned independently of the user-managed runtime modpack.
+// Only .class files are read out of existing JARs; no JAR is created or changed.
+ext.localModApiSpecs = [
+    [id: 'powah', label: 'Powah', directory: 'run/mods', pattern: '*Powah-*.jar', marker: 'owmii/powah/Powah.class'],
+    [id: 'ma', label: 'Mystical Agriculture', directory: '.dependency-cache/compile-only', pattern: '*mysticalagriculture-*.jar', marker: 'com/blakebr0/mysticalagriculture/MysticalAgriculture.class'],
+    [id: 'jei', label: 'JEI', directory: '.dependency-cache/compile-only', pattern: '*jei-*.jar', marker: 'mezz/jei/api/IModPlugin.class'],
+    [id: 'de', label: 'Draconic Evolution', directory: '.dependency-cache/compile-only', pattern: '*draconic-evolution-*.jar', marker: 'com/brandon3055/draconicevolution/DraconicEvolution.class'],
+    [id: 'bc', label: 'BrandonsCore', directory: '.dependency-cache/compile-only', pattern: '*brandonscore-*.jar', marker: 'com/brandon3055/brandonscore/BrandonsCore.class'],
+    [id: 'pb', label: 'Productive Bees', directory: '.dependency-cache/compile-only', pattern: '*productivebees-*.jar', marker: 'cy/jdkdigital/productivebees/ProductiveBees.class'],
+    [id: 'mek', label: 'Mekanism', directory: 'run/mods', pattern: '*Mekanism-*.jar', marker: 'mekanism/common/Mekanism.class'],
+    [id: 'flux', label: 'AppliedFlux', directory: 'run/mods', pattern: '*AppliedFlux-*.jar', marker: 'com/glodblock/github/appflux/common/me/key/FluxKey.class'],
+    [id: 'omni', label: 'Omnisequence', directory: 'run/mods', pattern: '*omnisequence-transfinite-*.jar', marker: 'com/atir/molecularmanipulator/api/crafting/OmniBatchCraftingProvider.class'],
+    [id: 'eco', label: 'NeoECO', directory: 'run/mods', pattern: '*neoecoae-*.jar', marker: 'cn/dancingsnow/neoecoae/api/me/provider/ECOFastPathDispatchProvider.class'],
+    [id: 'thunder', label: 'Thunderbolt', directory: 'run/mods', pattern: '*thunderbolt-*.jar', marker: 'com/moakiee/thunderbolt/api/crafting/batch/IBatchCraftingProvider.class'],
+    [id: 'ae2lt', label: 'AE2LT', directory: 'run/mods', pattern: '*ae2lt-*.jar', marker: 'com/moakiee/ae2lt/menu/TianshuPatternEncodingTermMenu.class'],
+    [id: 'trinity', label: 'Data Energistics', directory: 'run/mods', pattern: '*data_energistics-*.jar', marker: 'com/fish_dan_/data_energistics/common/crafting/trinity/dispatch/provider/CountedCraftingProvider.class'],
+    [id: 'wtlib', label: 'AE2WTLib', directory: 'run/mods', pattern: '*ae2wtlib-*.jar', marker: 'de/mari_023/ae2wtlib/wet/WETMenu.class'],
+]
+
 ext.selectLocalModApi = { String label, String directory, String pattern, Collection<File> candidates ->
     def matches = candidates.sort { it.name }
     if (matches.isEmpty()) {
-        throw new GradleException("Missing local compile API for ${label}. Expected one '${pattern}' in '${directory}'. Place the mod JAR there, then reload Gradle.")
+        throw new GradleException("Missing initial compile API for ${label}: expected '${pattern}' in '${directory}'. Restore that API once, then reload Gradle; later modpack changes do not require it.")
     }
     if (matches.size() != 1) {
-        throw new GradleException("Multiple local compile APIs for ${label} in '${directory}': ${matches*.name.join(', ')}. Keep one version, then reload Gradle.")
+        throw new GradleException("Multiple compile API candidates for ${label} in '${directory}': ${matches*.name.join(', ')}. Select one source version before initializing or refreshing the API cache.")
     }
     matches.first()
 }
 
-ext.localModApiSpecs = [
-    [label: 'Mystical Agriculture', directory: '.dependency-cache/compile-only', pattern: '*mysticalagriculture-*.jar'],
-    [label: 'JEI', directory: '.dependency-cache/compile-only', pattern: '*jei-*.jar'],
-    [label: 'Draconic Evolution', directory: '.dependency-cache/compile-only', pattern: '*draconic-evolution-*.jar'],
-    [label: 'BrandonsCore', directory: '.dependency-cache/compile-only', pattern: '*brandonscore-*.jar'],
-    [label: 'Productive Bees', directory: '.dependency-cache/compile-only', pattern: '*productivebees-*.jar'],
-    [label: 'Mekanism', directory: 'run/mods', pattern: '*Mekanism-*.jar'],
-    [label: 'AppliedFlux', directory: 'run/mods', pattern: '*AppliedFlux-*.jar'],
-    [label: 'Omnisequence', directory: 'run/mods', pattern: '*omnisequence-transfinite-*.jar'],
-    [label: 'NeoECO', directory: 'run/mods', pattern: '*neoecoae-*.jar'],
-    [label: 'Thunderbolt', directory: 'run/mods', pattern: '*thunderbolt-*.jar'],
-    [label: 'AE2LT', directory: 'run/mods', pattern: '*ae2lt-*.jar'],
-    [label: 'Data Energistics', directory: 'run/mods', pattern: '*data_energistics-*.jar'],
-    [label: 'AE2WTLib', directory: 'run/mods', pattern: '*ae2wtlib-*.jar'],
-]
-
-ext.localModApi = { spec ->
-    files(providers.provider {
-        def matches = fileTree(spec.directory) {
-            include spec.pattern
-            exclude '*-sources.jar', '*-javadoc.jar'
-        }.files
-        selectLocalModApi(spec.label, spec.directory, spec.pattern, matches)
-    })
+ext.findLocalModApiSource = { spec ->
+    // Preserve the known development baseline when a separate API JAR is present.
+    def directories = [spec.directory, '.dependency-cache/compile-only', 'run/mods'].unique()
+    def namePattern = Pattern.compile(spec.pattern.split('\\*', -1).collect { Pattern.quote(it) }.join('.*'), Pattern.CASE_INSENSITIVE)
+    for (String directory : directories) {
+        def matches = (file(directory).listFiles() ?: []).findAll {
+            it.isFile() && namePattern.matcher(it.name).matches() && !(it.name.toLowerCase(Locale.ROOT) ==~ /.*-(sources|javadoc)\.jar/)
+        }
+        if (!matches.isEmpty()) return selectLocalModApi(spec.label, directory, spec.pattern, matches)
+    }
+    selectLocalModApi(spec.label, directories.join(' or '), spec.pattern, [])
 }
+
+def apiCacheRoot = file('.dependency-cache/compile-api')
+def readPin = { spec ->
+    def manifest = new File(apiCacheRoot, "${spec.id}/current.json")
+    if (!manifest.isFile()) return null
+    def pin = new JsonSlurper().parse(manifest, 'UTF-8')
+    if (pin.schema != 1 || pin.id != spec.id || !(pin.sha256 ==~ /[0-9a-f]{64}/)) {
+        throw new GradleException("Invalid pinned API manifest for ${spec.label}: ${manifest}. Use refreshLocalModApis -PammModApi=${spec.id} to rebuild it.")
+    }
+    def classes = new File(apiCacheRoot, "${spec.id}/${pin.sha256}/classes")
+    if (!new File(classes, spec.marker).isFile()) {
+        throw new GradleException("Incomplete pinned API for ${spec.label}. Restore its source and run refreshLocalModApis -PammModApi=${spec.id}.")
+    }
+    [classes: classes, manifest: pin]
+}
+
+ext.pinnedLocalModApi = { spec, boolean refresh = false ->
+    def apiRoot = new File(apiCacheRoot, spec.id)
+    apiRoot.mkdirs()
+    // IDE import and command-line Gradle can resolve the same API concurrently.
+    new RandomAccessFile(new File(apiRoot, 'cache.lock'), 'rw').withCloseable { lockFile ->
+        lockFile.channel.lock().withCloseable {
+            if (!refresh) {
+                def existing = readPin(spec)
+                if (existing != null) return existing
+            }
+            File source = findLocalModApiSource(spec)
+            def digest = MessageDigest.getInstance('SHA-256')
+            source.withInputStream { input ->
+                new DigestInputStream(input, digest).transferTo(OutputStream.nullOutputStream())
+            }
+            String sha256 = HexFormat.of().formatHex(digest.digest())
+            File versionRoot = new File(apiRoot, sha256)
+            def complete = new File(versionRoot, 'complete.json')
+            def versionInfo
+            if (complete.isFile()) {
+                versionInfo = new JsonSlurper().parse(complete, 'UTF-8')
+            } else {
+                // Publish only after every class has been read successfully.
+                File staging = Files.createTempDirectory(apiRoot.toPath(), 'extract-').toFile()
+                File classes = new File(staging, 'classes')
+                classes.mkdirs()
+                int count = 0
+                new ZipFile(source).withCloseable { archive ->
+                    if (archive.getEntry(spec.marker) == null) {
+                        throw new GradleException("${source.name} does not contain the required ${spec.label} API (${spec.marker}). The existing pin is unchanged.")
+                    }
+                    archive.entries().each { entry ->
+                        if (!entry.directory && entry.name.endsWith('.class') && !entry.name.startsWith('META-INF/') && entry.name != 'module-info.class') {
+                            def target = classes.toPath().resolve(entry.name).normalize()
+                            if (!target.startsWith(classes.toPath()) || entry.name.contains('\\')) {
+                                throw new GradleException("Invalid class path in ${source.name}: ${entry.name}")
+                            }
+                            Files.createDirectories(target.parent)
+                            archive.getInputStream(entry).withCloseable { input -> Files.copy(input, target) }
+                            count++
+                        }
+                    }
+                }
+                versionInfo = [schema: 1, id: spec.id, sha256: sha256, source: source.name, classes: count]
+                new File(staging, 'complete.json').setText(JsonOutput.prettyPrint(JsonOutput.toJson(versionInfo)), 'UTF-8')
+                Files.move(staging.toPath(), versionRoot.toPath())
+            }
+            if (!new File(versionRoot, "classes/${spec.marker}").isFile()) {
+                throw new GradleException("Incomplete cached version for ${spec.label}: ${versionRoot}")
+            }
+            File manifestTemp = Files.createTempFile(apiRoot.toPath(), 'pin-', '.json').toFile()
+            manifestTemp.setText(JsonOutput.prettyPrint(JsonOutput.toJson(versionInfo)), 'UTF-8')
+            Files.move(manifestTemp.toPath(), new File(apiRoot, 'current.json').toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+            logger.lifecycle("Pinned ${spec.label} compile API: ${versionInfo.source} (${versionInfo.classes} classes)")
+            readPin(spec)
+        }
+    }
+}
+
+ext.localModApi = { spec -> files(providers.provider { pinnedLocalModApi(spec).classes }) }
 
 tasks.register('checkLocalModApis') {
     group = 'verification'
-    description = 'List and validate the single installed JAR used for each local compile API.'
+    description = 'Validate pinned compile APIs; no dependency on the current runtime modpack.'
     doLast {
         localModApiSpecs.each { spec ->
-            println "${spec.label}: ${localModApi(spec).singleFile.name}"
+            def pin = pinnedLocalModApi(spec)
+            println "${spec.label}: ${pin.manifest.source} -> ${project.relativePath(pin.classes)}"
         }
+    }
+}
+
+tasks.register('refreshLocalModApis') {
+    group = 'build setup'
+    description = 'Explicitly refresh pinned APIs from local JARs; optionally select one with -PammModApi=ae2lt.'
+    doLast {
+        String selected = providers.gradleProperty('ammModApi').orNull
+        def specs = selected == null ? localModApiSpecs : localModApiSpecs.findAll { it.id == selected }
+        if (specs.isEmpty()) throw new GradleException("Unknown ammModApi '${selected}'. Choose: ${localModApiSpecs*.id.join(', ')}")
+        // Fail missing/duplicate selections before updating any pin.
+        specs.each { findLocalModApiSource(it) }
+        specs.each { pinnedLocalModApi(it, true) }
+        println 'Compile APIs refreshed. Reload Gradle in IDEA; runtime compatibility still requires verification.'
     }
 }

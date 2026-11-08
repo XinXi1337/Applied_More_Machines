@@ -1,5 +1,7 @@
 package com.appliedmoremachines.dissolution;
 
+import com.appliedmoremachines.production.*;
+
 import com.appliedmoremachines.latex.LatexUpgrades;
 import java.util.*;
 import net.minecraft.core.HolderLookup;
@@ -21,7 +23,12 @@ public final class DissolutionProcessor {
         void commit(Plan plan);
         void dirty();
     }
-    public record Plan(int[] consumed, int fluidConsumed, List<ItemStack> outputs, FluidStack fluidOutput) {}
+    public record Plan(int[] consumed, int fluidConsumed, List<ItemStack> outputs, FluidStack fluidOutput,
+            Map<appeng.api.stacks.AEKey, Long> overflow) {
+        public Plan(int[] consumed, int fluidConsumed, List<ItemStack> outputs, FluidStack fluidOutput) {
+            this(consumed, fluidConsumed, outputs, fluidOutput, Map.of());
+        }
+    }
     private ResourceLocation id;
     private DissolutionRecipes.Entry recipe;
     private CompoundTag definition;
@@ -49,7 +56,7 @@ public final class DissolutionProcessor {
                 List<ItemStack> snapshot = new ArrayList<>();
                 for (int i = 0; i < 8; i++) snapshot.add(plan.consumed[i] == 0 ? ItemStack.EMPTY : host.inputs().get(i).copyWithCount(plan.consumed[i]));
                 reserved = List.copyOf(snapshot);
-                reservedFluid = host.inputFluid().copyWithAmount(plan.fluidConsumed);
+                reservedFluid = plan.fluidConsumed == 0 ? FluidStack.EMPTY : host.inputFluid().copyWithAmount(plan.fluidConsumed);
                 host.dirty(); break search;
             }
         }
@@ -62,8 +69,9 @@ public final class DissolutionProcessor {
         host.commit(plan); reset(); host.dirty();
     }
     private boolean matchesReserved(Host host) {
-        if (reserved.size() != 8 || !FluidStack.isSameFluidSameComponents(reservedFluid, host.inputFluid())
-                || host.inputFluid().getAmount() < reservedFluid.getAmount()) return false;
+        if (reserved.size() != 8) return false;
+        if (!reservedFluid.isEmpty() && (!FluidStack.isSameFluidSameComponents(reservedFluid, host.inputFluid())
+                || host.inputFluid().getAmount() < reservedFluid.getAmount())) return false;
         for (int i = 0; i < 8; i++) {
             ItemStack expected = reserved.get(i), actual = host.inputs().get(i);
             if (!expected.isEmpty() && (!ItemStack.isSameItemSameComponents(expected, actual) || actual.getCount() < expected.getCount())) return false;
@@ -72,12 +80,34 @@ public final class DissolutionProcessor {
     }
     public static Plan plan(Host host, DissolutionRecipes.Entry recipe, int parallel) {
         if (parallel < 1 || parallel > 7) return null;
-        long fluid = (long) recipe.fluid().amount() * parallel;
-        if (fluid > host.inputFluid().getAmount() || !recipe.fluid().ingredient().test(host.inputFluid())) return null;
+        if (recipe.fluid() != null) {
+            long fluid = (long) recipe.fluid().amount() * parallel;
+            if (fluid > host.inputFluid().getAmount() || !recipe.fluid().ingredient().test(host.inputFluid())) return null;
+        }
         int[] consumed = allocate(host.inputs(), recipe.inputs(), parallel);
         return consumed == null ? null : finish(host, recipe, parallel, consumed);
     }
     private static Plan finish(Host host, DissolutionRecipes.Entry recipe, int parallel, int[] consumed) {
+        if (MultiplicationUpgrade.active(host)) {
+            List<ItemStack> products = new ArrayList<>();
+            if (!recipe.output().isEmpty()) products.add(MultiplicationUpgrade.product(host, recipe.output(), parallel));
+            for (int i = 0; i < consumed.length; i++) if (consumed[i] > 0) {
+                ItemStack remainder = host.inputs().get(i).copyWithCount(1).getCraftingRemainingItem();
+                if (!remainder.isEmpty()) products.add(remainder.copyWithCount(remainder.getCount() * consumed[i]));
+            }
+            var items = MultiplicationOutputs.plan(host.outputs(), products);
+            Map<appeng.api.stacks.AEKey, Long> spill = new LinkedHashMap<>(items.overflow());
+            FluidStack fluid = host.outputFluid().copy(), result = recipe.outputFluid();
+            if (!result.isEmpty()) {
+                long total = MultiplicationUpgrade.amount(host, result.getAmount(), parallel);
+                int local = fluid.isEmpty() || FluidStack.isSameFluidSameComponents(fluid, result)
+                        ? (int) Math.min(total, Math.max(0, CAPACITY - fluid.getAmount())) : 0;
+                if (total > local) spill.merge(appeng.api.stacks.AEFluidKey.of(result), total - local, Math::addExact);
+                if (local > 0) fluid = result.copyWithAmount(fluid.getAmount() + local);
+            }
+            return new Plan(consumed, recipe.fluid() == null ? 0 : recipe.fluid().amount() * parallel,
+                    items.contents(), fluid, Map.copyOf(spill));
+        }
         List<ItemStack> output = new ArrayList<>();
         for (ItemStack stack : host.outputs()) output.add(stack.copy());
         if (!insert(output, recipe.output(), (long) recipe.output().getCount() * parallel)) return null;
@@ -91,7 +121,7 @@ public final class DissolutionProcessor {
             if (amount > CAPACITY || !fluidOutput.isEmpty() && !FluidStack.isSameFluidSameComponents(fluidOutput, result)) return null;
             fluidOutput = result.copyWithAmount((int) amount);
         }
-        return new Plan(consumed, recipe.fluid().amount() * parallel, List.copyOf(output), fluidOutput);
+        return new Plan(consumed, recipe.fluid() == null ? 0 : recipe.fluid().amount() * parallel, List.copyOf(output), fluidOutput);
     }
     private static boolean insert(List<ItemStack> slots, ItemStack item, long count) {
         if (item.isEmpty() || count <= 0) return true;
@@ -140,7 +170,7 @@ public final class DissolutionProcessor {
         tag.putInt("Ticks", ticks); tag.putInt("Duration", duration); tag.putInt("Parallel", parallel);
         ListTag inputs = new ListTag();
         for (ItemStack stack : reserved) inputs.add(stack.saveOptional(lookup));
-        tag.put("Reserved", inputs); tag.put("Fluid", reservedFluid.save(lookup));
+        tag.put("Reserved", inputs); if (!reservedFluid.isEmpty()) tag.put("Fluid", reservedFluid.save(lookup));
         return tag;
     }
     public void load(CompoundTag tag, HolderLookup.Provider lookup) {
@@ -149,8 +179,10 @@ public final class DissolutionProcessor {
         int time = tag.getInt("Duration"), p = tag.getInt("Parallel");
         ListTag list = tag.getList("Reserved", Tag.TAG_COMPOUND);
         if (key == null || time < 1 || time > 160 || p < 1 || p > 7 || list.size() != 8 || !tag.contains("Definition", Tag.TAG_COMPOUND)) return;
-        FluidStack fluid = FluidStack.parseOptional(lookup, tag.getCompound("Fluid"));
-        if (fluid.isEmpty() || fluid.getAmount() > CAPACITY) return;
+        boolean requiresFluid = tag.getCompound("Definition").contains("FluidPredicate");
+        FluidStack fluid = tag.contains("Fluid", Tag.TAG_COMPOUND)
+                ? FluidStack.parseOptional(lookup, tag.getCompound("Fluid")) : FluidStack.EMPTY;
+        if (requiresFluid != !fluid.isEmpty() || fluid.getAmount() > CAPACITY) return;
         id = key; definition = tag.getCompound("Definition").copy(); duration = time; parallel = p;
         ticks = Math.clamp(tag.getInt("Ticks"), 0, time);
         List<ItemStack> inputs = new ArrayList<>();

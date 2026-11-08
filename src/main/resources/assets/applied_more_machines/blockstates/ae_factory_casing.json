@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,formed=false": {
       "model": "applied_more_machines:block/ae_factory_casing"
     },
-    "facing=east": {
+    "facing=east,formed=false": {
       "model": "applied_more_machines:block/ae_factory_casing",
       "y": 90
     },
-    "facing=south": {
+    "facing=south,formed=false": {
       "model": "applied_more_machines:block/ae_factory_casing",
       "y": 180
     },
-    "facing=west": {
+    "facing=west,formed=false": {
       "model": "applied_more_machines:block/ae_factory_casing",
+      "y": 270
+    },
+    "facing=north,formed=true": {
+      "model": "applied_more_machines:block/ae_factory_casing_formed"
+    },
+    "facing=east,formed=true": {
+      "model": "applied_more_machines:block/ae_factory_casing_formed",
+      "y": 90
+    },
+    "facing=south,formed=true": {
+      "model": "applied_more_machines:block/ae_factory_casing_formed",
+      "y": 180
+    },
+    "facing=west,formed=true": {
+      "model": "applied_more_machines:block/ae_factory_casing_formed",
       "y": 270
     }
   }

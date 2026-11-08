@@ -13,6 +13,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.ChatFormatting;
+import net.neoforged.fml.ModList;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -182,7 +183,7 @@ public final class InfusionPedestaScreen extends AbstractContainerScreen<Infusio
         int x = leftPos + imageWidth;
         int y = topPos;
         int width = InfusionPedestaMenu.UPGRADE_PANEL_WIDTH;
-        int height = InfusionPedestaMenu.UPGRADE_PANEL_HEIGHT;
+        int height = MultiplicationScreen.panelHeight(menu, InfusionPedestaMenu.UPGRADE_PANEL_HEIGHT);
         graphics.fill(x, y, x + width, y + height, BORDER_COLOR);
         graphics.fill(x, y + 1, x + width - 1, y + height - 1, LIGHT_COLOR);
         graphics.fill(x, y + 2, x + width - 2, y + height - 2, PANEL_COLOR);
@@ -220,7 +221,7 @@ public final class InfusionPedestaScreen extends AbstractContainerScreen<Infusio
     protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top, int button) {
         if (!configurationOpen && mouseX >= left + imageWidth
                 && mouseX < left + imageWidth + InfusionPedestaMenu.UPGRADE_PANEL_WIDTH
-                && mouseY >= top && mouseY < top + InfusionPedestaMenu.UPGRADE_PANEL_HEIGHT) {
+                && mouseY >= top && mouseY < top + MultiplicationScreen.panelHeight(menu, InfusionPedestaMenu.UPGRADE_PANEL_HEIGHT)) {
             return false;
         }
         if (configurationOpen || mouseX >= left - TOOLBAR_WIDTH && mouseX < left
@@ -260,6 +261,7 @@ public final class InfusionPedestaScreen extends AbstractContainerScreen<Infusio
 
     @Override
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (MultiplicationScreen.tooltip(graphics, font, hoveredSlot, menu.getCarried(), mouseX, mouseY, this::getTooltipFromContainerItem)) return;
         if (!configurationOpen && hoveredSlot != null
                 && hoveredSlot.index >= InfusionPedestaMenu.UPGRADE_MENU_START
                 && hoveredSlot.index < InfusionPedestaMenu.UPGRADE_MENU_START + InfusionPedestaBlockEntity.UPGRADE_COUNT) {
@@ -272,9 +274,11 @@ public final class InfusionPedestaScreen extends AbstractContainerScreen<Infusio
             lines.add(Component.translatable("gui.applied_more_machines.upgrade_limit",
                     Component.translatable("item.ae2.speed_card"), InfusionPedestaBlockEntity.UPGRADE_COUNT)
                     .withStyle(ChatFormatting.GRAY));
-            lines.add(Component.translatable("gui.applied_more_machines.upgrade_limit",
-                    Component.translatable("gui.applied_more_machines.overload_card"), InfusionPedestaBlockEntity.UPGRADE_COUNT)
-                    .withStyle(ChatFormatting.GRAY));
+            if (ModList.get().isLoaded("ae2cs")) {
+                lines.add(Component.translatable("gui.applied_more_machines.upgrade_limit",
+                        Component.translatable("gui.applied_more_machines.overload_card"), InfusionPedestaBlockEntity.UPGRADE_COUNT)
+                        .withStyle(ChatFormatting.GRAY));
+            }
             graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
             return;
         }

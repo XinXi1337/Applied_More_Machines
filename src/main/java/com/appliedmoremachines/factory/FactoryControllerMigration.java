@@ -2,6 +2,8 @@ package com.appliedmoremachines.factory;
 
 import com.appliedmoremachines.AppliedMoreMachines;
 import com.appliedmoremachines.ModBlocks;
+import com.appliedmoremachines.FactoryCasingBlock;
+import net.minecraft.world.level.block.Block;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +24,7 @@ public final class FactoryControllerMigration {
     private FactoryControllerMigration() {}
 
     @SubscribeEvent public static void onChunkLoad(ChunkEvent.Load event) {
+        if (ModBlocks.AE_FACTORY_CONTROLLER == null) return;
         if (event.getLevel() instanceof ServerLevel level) {
             PENDING.computeIfAbsent(level, ignored -> ConcurrentHashMap.newKeySet()).add(event.getChunk().getPos());
         }
@@ -39,6 +42,7 @@ public final class FactoryControllerMigration {
     }
 
     @SubscribeEvent public static void afterLevelTick(LevelTickEvent.Post event) {
+        if (ModBlocks.AE_FACTORY_CONTROLLER == null) return;
         if (!(event.getLevel() instanceof ServerLevel level)) return;
         Set<ChunkPos> pending = PENDING.get(level);
         if (pending == null || pending.isEmpty()) return;
@@ -51,10 +55,17 @@ public final class FactoryControllerMigration {
             for (int index = 0; index < sections.length; index++) {
                 var section = sections[index];
                 if (!section.maybeHas(state -> state.is(ModBlocks.AE_FACTORY_CONTROLLER.get())
-                        || state.is(ModBlocks.AE_FACTORY_PATTERN.get()))) continue;
+                        || state.is(ModBlocks.AE_FACTORY_PATTERN.get())
+                        || state.getBlock() instanceof FactoryCasingBlock && state.getValue(FactoryCasingBlock.FORMED))) continue;
                 int minY = level.getSectionYFromSectionIndex(index) << 4;
                 for (int y = 0; y < 16; y++) for (int z = 0; z < 16; z++) for (int x = 0; x < 16; x++) {
                     var state = section.getBlockState(x, y, z);
+                    // A saved visual flag is not evidence of a loaded, valid factory.
+                    if (state.getBlock() instanceof FactoryCasingBlock && state.getValue(FactoryCasingBlock.FORMED)) {
+                        var casingPos = new BlockPos(pos.getMinBlockX() + x, minY + y, pos.getMinBlockZ() + z);
+                        level.setBlock(casingPos, state.setValue(FactoryCasingBlock.FORMED, false), Block.UPDATE_CLIENTS);
+                        continue;
+                    }
                     if (!state.is(ModBlocks.AE_FACTORY_CONTROLLER.get())
                             && !state.is(ModBlocks.AE_FACTORY_PATTERN.get())) continue;
                     var blockPos = new BlockPos(pos.getMinBlockX() + x, minY + y, pos.getMinBlockZ() + z);

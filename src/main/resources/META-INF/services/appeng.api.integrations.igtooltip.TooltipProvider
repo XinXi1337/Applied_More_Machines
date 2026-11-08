@@ -4,3 +4,5 @@ com.appliedmoremachines.integration.FishTooltipProvider
 com.appliedmoremachines.integration.LatexTooltipProvider
 com.appliedmoremachines.integration.DissolutionTooltipProvider
 com.appliedmoremachines.integration.FluidLaserTooltipProvider
+com.appliedmoremachines.integration.BrewingTooltipProvider
+com.appliedmoremachines.integration.EnergizingTooltipProvider

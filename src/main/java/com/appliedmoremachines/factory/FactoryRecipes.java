@@ -22,7 +22,10 @@ public final class FactoryRecipes {
     public static boolean chemicalsAvailable() {
         return ModList.get().isLoaded("mekanism") && ModList.get().isLoaded("appmek") && FactoryChemicalKeys.available();
     }
-    public record Match(String recipe, Map<AEKey, Long> inputs, Map<AEKey, Long> outputs) {
+    public record Match(String recipe, Map<AEKey, Long> inputs, Map<AEKey, Long> outputs, Map<AEKey, Long> remainders) {
+        public Match(String recipe, Map<AEKey, Long> inputs, Map<AEKey, Long> outputs) {
+            this(recipe, inputs, outputs, Map.of());
+        }
         /** More native operations per round; encoded quantities and controller time stay native. */
         public int parallelMultiplier() {
             return !inputs.isEmpty() && !outputs.isEmpty()

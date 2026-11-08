@@ -22,6 +22,10 @@ neoForge {
         }
         configureEach {
             systemProperty "forge.logging.markers", "REGISTRIES"
+            // GameTest scans can load optional integrations absent from the development modpack.
+            // Opt in explicitly with -PammEnableGameTests=true when running those tests.
+            systemProperty "applied_more_machines.skipAutomaticGameTests",
+                    providers.gradleProperty("ammEnableGameTests").map { !it.toBoolean() }.orElse(true).get().toString()
             logLevel = org.slf4j.event.Level.INFO
         }
     }
@@ -34,7 +38,7 @@ dependencies {
     runtimeOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
     // AE2 already requires GuideME at runtime; expose its cached public API for the guide button.
     compileOnly "org.appliedenergistics:guideme:21.1.1"
-    // Discover user-managed local API versions without bundling or runtime requirements.
+    // Pin compile-only API classes independently of changes to run/mods.
     localModApiSpecs.each { spec -> compileOnly localModApi(spec) }
 }
 sourceSets.main.resources.srcDir "src/generated/resources"
@@ -44,7 +48,11 @@ tasks.named("processResources", ProcessResources) {
     filesMatching("META-INF/neoforge.mods.toml") { expand metadataProperties }
 }
 tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
-idea.module { downloadSources = true; downloadJavadoc = false }
+idea.module {
+    downloadSources = true
+    downloadJavadoc = false
+    excludeDirs += files(".dependency-cache", "run").files
+}
 tasks.named("wrapper", Wrapper) {
     gradleVersion = "8.10.2"
     distributionType = Wrapper.DistributionType.BIN

@@ -91,3 +91,7 @@ Return or Escape leaves configuration. The guide button opens this page.
 - **Pipes reject materials:** install injectors first, check the loaded recipe, central-slot occupancy and native stack limits. Automation cannot insert into locked slots.
 - **No automatic output:** enable both the master switch and a side, and place an accepting container directly beside it.
 - **No recipe without Draconic Evolution:** this is expected; AE2 is the only directly required content mod.
+
+## Multiplication Card
+
+With Data Energistics installed, one dedicated single-card slot is added beside the existing upgrade slots. See [Multiplication Card](multiplication_card.md) for rounding, parallel copies, container returns and ME overflow.
