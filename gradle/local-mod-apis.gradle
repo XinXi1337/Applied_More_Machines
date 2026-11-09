@@ -9,6 +9,9 @@ import java.util.zip.ZipFile
 // Compile APIs are pinned independently of the user-managed runtime modpack.
 // Only .class files are read out of existing JARs; no JAR is created or changed.
 ext.localModApiSpecs = [
+    [id: 'extendedae', label: 'ExtendedAE', directory: 'run/mods', pattern: '*ExtendedAE-*.jar', marker: 'com/glodblock/github/extendedae/common/tileentities/TileCrystalAssembler.class'],
+    [id: 'ae2cs', label: 'AE2 Crystal Science', directory: 'run/mods', pattern: '*ae2cs-*.jar', marker: 'io/github/lounode/ae2cs/common/block/entity/CircuitEtcherBlockEntity.class'],
+    [id: 'glodium', label: 'Glodium', directory: 'run/mods', pattern: '*Glodium-*.jar', marker: 'com/glodblock/github/glodium/recipe/CommonRecipeContext.class'],
     [id: 'powah', label: 'Powah', directory: 'run/mods', pattern: '*Powah-*.jar', marker: 'owmii/powah/Powah.class'],
     [id: 'ma', label: 'Mystical Agriculture', directory: '.dependency-cache/compile-only', pattern: '*mysticalagriculture-*.jar', marker: 'com/blakebr0/mysticalagriculture/MysticalAgriculture.class'],
     [id: 'jei', label: 'JEI', directory: '.dependency-cache/compile-only', pattern: '*jei-*.jar', marker: 'mezz/jei/api/IModPlugin.class'],

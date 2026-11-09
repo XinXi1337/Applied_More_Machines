@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "applied_more_machines:block/ae_hidden_backup_power"
+  }
+}

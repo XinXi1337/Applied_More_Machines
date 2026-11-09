@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "extendedae"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MMM",
+    "MPM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "item": "extendedae:circuit_cutter"
+    },
+    "P": {
+      "item": "extendedae:concurrent_processor"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:circuit_cutter_x8",
+    "count": 1
+  }
+}

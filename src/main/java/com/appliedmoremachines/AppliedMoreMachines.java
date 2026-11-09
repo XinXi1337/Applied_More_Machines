@@ -19,6 +19,12 @@ public final class AppliedMoreMachines {
     public static final Logger LOGGER = LogUtils.getLogger();
     public AppliedMoreMachines(IEventBus modEventBus) {
         ModBlocks.register(modEventBus);
+        com.appliedmoremachines.nativeeight.NativeEightMachines.register(modEventBus);
+        if (ModBlocks.BLADE_OF_BENEVOLENCE != null) {
+            NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, com.appliedmoremachines.items.VirtueTools::attack);
+            NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, com.appliedmoremachines.items.VirtueTools::leftClick);
+            NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, com.appliedmoremachines.items.VirtueTools::breakBlock);
+        }
         ModCreativeTabs.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenus.register(modEventBus);
@@ -46,6 +52,12 @@ public final class AppliedMoreMachines {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        if (ModBlockEntities.AE_HIDDEN_BACKUP_POWER != null) {
+            event.registerBlockEntity(AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                    ModBlockEntities.AE_HIDDEN_BACKUP_POWER.get(), (host, side) -> host);
+            event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK,
+                    ModBlockEntities.AE_HIDDEN_BACKUP_POWER.get(), (host, side) -> host.getForgeEnergyStorage(side));
+        }
         for (var type : java.util.List.of(ModBlockEntities.INSCRIBER_X8.get(), ModBlockEntities.INSCRIBER_X64.get())) {
             event.registerBlockEntity(AECapabilities.IN_WORLD_GRID_NODE_HOST, type, (machine, side) -> machine);
             event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, type, appeng.blockentity.powersink.AEBasePoweredBlockEntity::getEnergyStorage);

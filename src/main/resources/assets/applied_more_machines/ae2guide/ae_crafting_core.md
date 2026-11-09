@@ -38,9 +38,8 @@ When idle, removing injectors returns materials from newly locked slots to the o
 If the inventory cannot hold all of them, the removal is cancelled; items are not discarded.
 Take equipment into your inventory rather than using the drop key on its slot.
 
-The central catalyst normally has a limit of **one item**. Exceptions come from real recipe definitions, not a global stacking override:
-recipes requiring four draconium blocks or four wyvern relay crystals allow four matching items in this slot.
-The catalyst count must exactly match the selected recipe, because completion replaces the entire slot with its product.
+The central catalyst and side ingredients may be stacked up to their native item limits. Matching requires enough of each ingredient; each operation consumes only one recipe's required quantities.
+The center still becomes the product. Unused catalyst is returned to unlocked side slots, preserving its components. If there is insufficient space, crafting waits without consuming materials or discarding the surplus.
 Side ingredients and products retain their native stack limits and components. Non-consumed ingredients remain; crafting container remainders need free unlocked space.
 
 ## Energy and progress
@@ -86,7 +85,7 @@ Return or Escape leaves configuration. The guide button opens this page.
 
 <RecipeFor id="applied_more_machines:ae_crafting_core" />
 
-- **No progress:** verify the central catalyst and exact count, enough unlocked slots, the required injector tier, complete materials and available energy.
+- **No progress:** verify the central catalyst and sufficient quantity, space for unused catalyst, enough unlocked slots, the required injector tier, complete materials and available energy.
 - **Injectors will not come out:** processing is active or paused for energy, or your inventory cannot hold the materials that would be returned.
 - **Pipes reject materials:** install injectors first, check the loaded recipe, central-slot occupancy and native stack limits. Automation cannot insert into locked slots.
 - **No automatic output:** enable both the master switch and a side, and place an accepting container directly beside it.

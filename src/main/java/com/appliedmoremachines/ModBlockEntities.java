@@ -84,6 +84,10 @@ public final class ModBlockEntities {
         return type;
     }
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AEHiddenBackupPowerBlockEntity>> AE_HIDDEN_BACKUP_POWER =
+            ModBlocks.AE_HIDDEN_BACKUP_POWER == null ? null : BLOCK_ENTITIES.register("ae_hidden_backup_power", () ->
+                    BlockEntityType.Builder.of(AEHiddenBackupPowerBlockEntity::new, ModBlocks.AE_HIDDEN_BACKUP_POWER.get()).build(null));
+
     private ModBlockEntities() {}
 
     public static void register(IEventBus modEventBus) {

@@ -85,8 +85,7 @@ public final class CraftingCoreMenu extends AbstractContainerMenu {
         addSlot(new PageSlot(core, CraftingCoreBlockEntity.CENTER_SLOT, 80, 80) {
             @Override public boolean mayPlace(ItemStack stack) { return !isResult() && super.mayPlace(stack); }
             @Override public int getMaxStackSize(ItemStack stack) {
-                return isResult() ? stack.getMaxStackSize() : Math.min(stack.getMaxStackSize(),
-                        Math.max(1, CoreRecipes.catalystLimit(playerInventory.player.level(), stack)));
+                return stack.getMaxStackSize();
             }
         });
         for (int row = 0; row < 3; row++) {

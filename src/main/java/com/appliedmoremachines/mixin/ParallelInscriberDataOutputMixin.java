@@ -14,6 +14,6 @@ public abstract class ParallelInscriberDataOutputMixin {
     @Inject(method = "restoreExternalOutput", at = @At("HEAD"), cancellable = true, require = 0)
     private static void amm$restoreBulkOutput(InternalInventory inventory, int slot, ItemStack stack,
             boolean simulate, CallbackInfoReturnable<ItemStack> cir) {
-        if (inventory instanceof InscriberSideInventory) cir.setReturnValue(inventory.insertItem(slot, stack, simulate));
+        if (inventory instanceof InscriberSideInventory || com.appliedmoremachines.nativeeight.EightInventories.expanded(inventory)) cir.setReturnValue(inventory.insertItem(slot, stack, simulate));
     }
 }

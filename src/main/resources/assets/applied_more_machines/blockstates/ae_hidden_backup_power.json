@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "applied_more_machines:block/ae_hidden_backup_power"
+    }
+  }
+}

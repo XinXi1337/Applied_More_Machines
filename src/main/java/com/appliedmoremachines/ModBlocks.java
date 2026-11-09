@@ -126,6 +126,15 @@ public final class ModBlocks {
     public static final DeferredItem<BlockItem> INSCRIBER_X64_ITEM = ITEMS.register("inscriber_x64", () ->
             new appeng.block.AEBaseBlockItem(INSCRIBER_X64.get(), new net.minecraft.world.item.Item.Properties()));
 
+    public static final DeferredBlock<AEHiddenBackupPowerBlock> AE_HIDDEN_BACKUP_POWER = registerMachine(
+            "ae_hidden_backup_power", () -> new AEHiddenBackupPowerBlock(BlockBehaviour.Properties.of().strength(3.5F).sound(SoundType.METAL)));
+    public static final DeferredItem<BlockItem> AE_HIDDEN_BACKUP_POWER_ITEM = registerMachineItem(AE_HIDDEN_BACKUP_POWER);
+
+    public static final DeferredItem<com.appliedmoremachines.items.VirtueToolItem> BLADE_OF_BENEVOLENCE =
+            MachineAvailability.enabled("blade_of_benevolence") ? ITEMS.register("blade_of_benevolence", () -> new com.appliedmoremachines.items.VirtueToolItem(true)) : null;
+    public static final DeferredItem<com.appliedmoremachines.items.VirtueToolItem> PICKAXE_OF_RIGHTEOUSNESS =
+            MachineAvailability.enabled("pickaxe_of_righteousness") ? ITEMS.register("pickaxe_of_righteousness", () -> new com.appliedmoremachines.items.VirtueToolItem(false)) : null;
+
     private ModBlocks() {}
 
     private static <T extends Block> DeferredBlock<T> registerMachine(String id, Supplier<T> factory) {
@@ -149,6 +158,7 @@ public final class ModBlocks {
             event.accept(AE_ENCHANTING_TABLE_ITEM.get());
             event.accept(AE_FISH_ITEM.get());
             event.accept(AE_BREWING_ITEM.get());
+            if (AE_HIDDEN_BACKUP_POWER_ITEM != null) event.accept(AE_HIDDEN_BACKUP_POWER_ITEM.get());
             event.accept(INSCRIBER_X8_ITEM.get());
             event.accept(INSCRIBER_X64_ITEM.get());
             if (AE_ENERGIZING_ORB_ITEM != null) event.accept(AE_ENERGIZING_ORB_ITEM.get());

@@ -48,6 +48,7 @@ public final class MultiplicationUpgrade extends SimpleContainer {
         super.setChanged();
         if (owner != null) {
             owner.setChanged();
+            if (owner instanceof com.appliedmoremachines.nativeeight.NativeEightHost host) host.multiplicationChanged();
             if (owner instanceof IGridConnectedBlockEntity gridHost) gridHost.getMainNode().ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
         }
     }

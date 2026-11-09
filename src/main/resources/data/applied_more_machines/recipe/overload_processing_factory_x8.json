@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2lt"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MMM",
+    "MPM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "item": "ae2lt:overload_processing_factory"
+    },
+    "P": {
+      "item": "ae2lt:lightning_collapse_matrix"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:overload_processing_factory_x8",
+    "count": 1
+  }
+}

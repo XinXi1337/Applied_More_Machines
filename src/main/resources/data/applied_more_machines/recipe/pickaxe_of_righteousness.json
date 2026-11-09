@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "IHI",
+    "CTC",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "draconicevolution:draconium_ingot"
+    },
+    "H": {
+      "item": "draconicevolution:dragon_heart"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "T": {
+      "item": "minecraft:wooden_pickaxe"
+    }
+  },
+  "result": {
+    "id": "applied_more_machines:pickaxe_of_righteousness",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "draconicevolution"
+    }
+  ]
+}

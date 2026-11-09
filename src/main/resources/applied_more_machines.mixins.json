@@ -5,6 +5,7 @@
   "plugin": "com.appliedmoremachines.compat.mixin.AcceleratedRenderingMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "HiddenPowerEnergyMixin",
     "FactoryCpuMixin",
     "FactoryAdvancedCpuMixin",
     "FactoryEcoCpuMixin",
@@ -16,14 +17,30 @@
     "ParallelInscriberMenuMixin",
     "ParallelInscriberClickMixin",
     "MultiplicationMenuAccess",
-    "ParallelInscriberDataOutputMixin"
+    "ParallelInscriberDataOutputMixin",
+    "VirtueChaosCrystalMixin",
+    "VirtueChaosTileMixin",
+    "EightInventoryMixin",
+    "EightInsertionMixin",
+    "EightSlotMixin",
+    "EightExecutorMixin",
+    "EightEtcherMixin",
+    "EightFactoryMixin",
+    "EightMenuMixin",
+    "EightFactoryInventoryMixin",
+    "EightFactoryRecipeServiceMixin",
+    "EightFactoryMenuMixin",
+    "EightAssemblerMenuMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
     "MultiplicationScreenMixin",
+    "MultiplicationAeTooltipMixin",
     "MultiplicationUpgradePanelMixin",
-    "MultiplicationUpgradePanelCountMixin"
+    "MultiplicationUpgradePanelCountMixin",
+    "EightFactoryScreenMixin",
+    "EightAssemblerScreenMixin"
   ]
 }

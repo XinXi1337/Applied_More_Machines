@@ -23,6 +23,7 @@ public final class ClientModEvents {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        if(com.appliedmoremachines.MachineAvailability.enabled("circuit_cutter_x8")) NativeEightClient.extendedRenderers(event);
         event.registerBlockEntityRenderer(ModBlockEntities.INSCRIBER_X8.get(), appeng.client.render.tesr.InscriberTESR::new);
         event.registerBlockEntityRenderer(ModBlockEntities.INSCRIBER_X64.get(), appeng.client.render.tesr.InscriberTESR::new);
         event.registerBlockEntityRenderer(ModBlockEntities.AE_ENCHANTING_TABLE.get(), AEEnchantingTableRenderer::new);
@@ -39,6 +40,7 @@ public final class ClientModEvents {
         event.register(ModMenus.AE_FISH.get(), AEFishScreen::new);
         event.register(ModMenus.AE_BREWING.get(), AEBrewingScreen::new);
         if (ModMenus.AE_ENERGIZING_ORB != null) event.register(ModMenus.AE_ENERGIZING_ORB.get(), AEEnergizingScreen::new);
+        if (ModMenus.AE_HIDDEN_BACKUP_POWER != null) event.register(ModMenus.AE_HIDDEN_BACKUP_POWER.get(), AEHiddenBackupPowerScreen::new);
         if (ModMenus.AE_FLUID_LASER_BASE != null)
             event.register(ModMenus.AE_FLUID_LASER_BASE.get(), FluidLaserBaseScreen::new);
         if (ModMenus.AE_DISSOLUTION_CHAMBER_FRONT != null)

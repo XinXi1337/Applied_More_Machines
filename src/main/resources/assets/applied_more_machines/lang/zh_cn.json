@@ -181,5 +181,17 @@
   "config.jade.plugin_applied_more_machines.energizing_power_storage": "AE充能台 能量",
   "config.jade.plugin_applied_more_machines.energizing_grid_node": "AE充能台 ME",
   "block.applied_more_machines.inscriber_x8": "压印器 x8",
-  "block.applied_more_machines.inscriber_x64": "压印器 x64"
+  "block.applied_more_machines.inscriber_x64": "压印器 x64",
+  "block.applied_more_machines.ae_hidden_backup_power": "AE后备隐藏能源",
+  "config.jade.plugin_applied_more_machines.hidden_power_storage": "后备能源储能",
+  "config.jade.plugin_applied_more_machines.hidden_grid_node": "后备能源网络状态",
+  "tooltip.applied_more_machines.ae_hidden_backup_power": "专用解决AE断电问题",
+  "item.applied_more_machines.blade_of_benevolence": "仁之剑",
+  "tooltip.applied_more_machines.blade_of_benevolence": "凝聚了所有玩家对混沌龙的憎恨",
+  "item.applied_more_machines.pickaxe_of_righteousness": "义之镐",
+  "tooltip.applied_more_machines.pickaxe_of_righteousness": "凝聚了所有玩家对混沌水晶的逃课巧思",
+  "block.applied_more_machines.crystal_assembler_x8": "水晶装配器 x8",
+  "block.applied_more_machines.circuit_cutter_x8": "电路切片器 x8",
+  "block.applied_more_machines.circuit_etcher_x8": "电路蚀刻器 x8",
+  "block.applied_more_machines.overload_processing_factory_x8": "过载处理工厂 x8"
 }

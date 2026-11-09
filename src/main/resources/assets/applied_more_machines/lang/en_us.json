@@ -181,5 +181,17 @@
   "config.jade.plugin_applied_more_machines.energizing_power_storage": "AE Energizing Orb 能量",
   "config.jade.plugin_applied_more_machines.energizing_grid_node": "AE Energizing Orb ME",
   "block.applied_more_machines.inscriber_x8": "Inscriber x8",
-  "block.applied_more_machines.inscriber_x64": "Inscriber x64"
+  "block.applied_more_machines.inscriber_x64": "Inscriber x64",
+  "block.applied_more_machines.ae_hidden_backup_power": "AE Hidden Backup Power",
+  "config.jade.plugin_applied_more_machines.hidden_power_storage": "Backup energy storage",
+  "config.jade.plugin_applied_more_machines.hidden_grid_node": "Backup energy network status",
+  "tooltip.applied_more_machines.ae_hidden_backup_power": "Dedicated to resolving AE power outages",
+  "item.applied_more_machines.blade_of_benevolence": "Blade of Benevolence",
+  "tooltip.applied_more_machines.blade_of_benevolence": "Forged from every player's hatred of the Chaos Guardian",
+  "item.applied_more_machines.pickaxe_of_righteousness": "Pickaxe of Righteousness",
+  "tooltip.applied_more_machines.pickaxe_of_righteousness": "Forged from every player's ingenuity in bypassing the Chaos Crystal",
+  "block.applied_more_machines.crystal_assembler_x8": "Crystal Assembler x8",
+  "block.applied_more_machines.circuit_cutter_x8": "Circuit Cutter x8",
+  "block.applied_more_machines.circuit_etcher_x8": "Circuit Etcher x8",
+  "block.applied_more_machines.overload_processing_factory_x8": "Overload Processing Factory x8"
 }

@@ -73,7 +73,7 @@ public record CoreRecipe(ResourceLocation id, Ingredient catalyst, int catalystC
         // Injectors unlock physical slots. Repeated recipe entries may share a stack;
         // quantity allocation below decides whether the unlocked inventory is sufficient.
         if (!available() || installedTier < tier
-                || center.getCount() != catalystCount || !accepts(catalyst, catalystCount, center)) return null;
+                || center.getCount() < catalystCount || !accepts(catalyst, catalystCount, center)) return null;
         int[] counts = new int[unlocked];
         for (int i = 0; i < counts.length; i++) counts[i] = inventory.getItem(i).getCount();
         List<boolean[]> predicates = new ArrayList<>();
@@ -98,7 +98,7 @@ public record CoreRecipe(ResourceLocation id, Ingredient catalyst, int catalystC
             else return null;
             if (parts.get(position).consume) after.get(slot).shrink(1);
         }
-        ItemStack result = factory.assemble(level, registries, center.copy(), selected, installedTier);
+        ItemStack result = factory.assemble(level, registries, center.copyWithCount(catalystCount), selected, installedTier);
         if (result.isEmpty() || result.getCount() > result.getMaxStackSize()) return null;
         for (int part = 0; part < parts.size(); part++) {
             ItemStack used = selected.get(part);
@@ -113,6 +113,9 @@ public record CoreRecipe(ResourceLocation id, Ingredient catalyst, int catalystC
                 if (!returnRemainder(after, center.copyWithCount(1).getCraftingRemainingItem(), unlocked)) return null;
             }
         }
+        // The shared center becomes the product. Reserve space for unused catalyst first.
+        ItemStack surplus = center.copyWithCount(center.getCount() - catalystCount);
+        if (!surplus.isEmpty() && !returnRemainder(after, surplus, unlocked)) return null;
         return new Plan(result.copy(), List.copyOf(after));
     }
 

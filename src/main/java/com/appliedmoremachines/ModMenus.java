@@ -58,6 +58,10 @@ public final class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<AEEnergizingMenu>> AE_ENERGIZING_ORB = ModBlocks.AE_ENERGIZING_ORB == null ? null :
             MENUS.register("ae_energizing_orb", () -> new MenuType<>(AEEnergizingMenu::new, FeatureFlags.DEFAULT_FLAGS));
+    public static final DeferredHolder<MenuType<?>, MenuType<AEHiddenBackupPowerMenu>> AE_HIDDEN_BACKUP_POWER =
+            ModBlocks.AE_HIDDEN_BACKUP_POWER == null ? null : MENUS.register("ae_hidden_backup_power", () ->
+                    new MenuType<>(AEHiddenBackupPowerMenu::new, FeatureFlags.DEFAULT_FLAGS));
+
     private ModMenus() {}
 
     public static void register(IEventBus modEventBus) {

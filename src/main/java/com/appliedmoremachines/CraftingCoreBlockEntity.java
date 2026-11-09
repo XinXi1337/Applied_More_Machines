@@ -109,7 +109,6 @@ public final class CraftingCoreBlockEntity extends BaseContainerBlockEntity
     public int slotLimit(int slot, ItemStack stack) {
         if (slot == INJECTOR_SLOT) return Math.min(16, stack.getMaxStackSize());
         if (slot >= UPGRADE_START) return 1;
-        if (slot == CENTER_SLOT && !result) return Math.min(stack.getMaxStackSize(), Math.max(1, CoreRecipes.catalystLimit(level, stack)));
         return stack.getMaxStackSize();
     }
 

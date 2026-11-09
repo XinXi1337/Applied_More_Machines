@@ -57,6 +57,26 @@
       "required": false
     },
     "applied_more_machines:inscriber_x8",
-    "applied_more_machines:inscriber_x64"
+    "applied_more_machines:inscriber_x64",
+    {
+      "id": "applied_more_machines:ae_hidden_backup_power",
+      "required": false
+    },
+    {
+      "id": "applied_more_machines:crystal_assembler_x8",
+      "required": false
+    },
+    {
+      "id": "applied_more_machines:circuit_cutter_x8",
+      "required": false
+    },
+    {
+      "id": "applied_more_machines:circuit_etcher_x8",
+      "required": false
+    },
+    {
+      "id": "applied_more_machines:overload_processing_factory_x8",
+      "required": false
+    }
   ]
 }
